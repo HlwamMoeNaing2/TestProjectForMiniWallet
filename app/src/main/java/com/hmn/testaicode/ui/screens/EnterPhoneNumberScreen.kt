@@ -127,7 +127,7 @@ fun EnterPhoneNumberScreen(
                         onValueChange = { phoneNumber = it },
                         placeholder = "555 000 1234"
                     )
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(50.dp))
                     GradientContinueButton(onClick = onContinue)
                     Spacer(modifier = Modifier.height(16.dp))
                     TermsFooter()
