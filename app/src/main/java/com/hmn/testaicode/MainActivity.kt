@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.EnterPhoneNumberScreen
 import com.hmn.testaicode.ui.screens.idSubmitScreen.IDSubmitScreen
+import com.hmn.testaicode.ui.screens.selfieSubmitScreen.SelfieSubmitScreen
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
 //                    EnterPhoneNumberScreen(
 //                        Modifier.padding(innerPadding)
 //                    )
-                    IDSubmitScreen( Modifier.padding(innerPadding))
+                    SelfieSubmitScreen( Modifier.padding(innerPadding))
                 }
             }
         }
