@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.CountryViewModel
 import com.hmn.testaicode.data.CountryModel
+import com.hmn.testaicode.data.countryList
 import com.hmn.testaicode.ui.components.GradientContinueButton
 import com.hmn.testaicode.ui.components.PhoneNumberField
 import com.hmn.testaicode.ui.components.TermsFooter
@@ -81,12 +82,19 @@ import com.hmn.testaicode.ui.theme.TestAICodeTheme
 fun EnterPhoneNumberScreen(
     modifier: Modifier = Modifier,
     onContinue: () -> Unit = {},
-    countryViewModel: CountryViewModel = viewModel(),
+    /*countryViewModel: CountryViewModel = viewModel(),*/
 ) {
-    var phoneNumber by remember { mutableStateOf("") }
+
+    /*
     val countries by countryViewModel.countries.collectAsState()
     val selectedCountry by countryViewModel.selectedCountry.collectAsState()
     val showCountryPicker by countryViewModel.showPicker.collectAsState()
+     */
+
+
+    var phoneNumber by remember { mutableStateOf("") }
+
+    var showCountryPicker by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -142,8 +150,8 @@ fun EnterPhoneNumberScreen(
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     PhoneNumberField(
-                        country = selectedCountry,
-                        onCountryClick = { countryViewModel.openPicker() },
+                        country = countryList.first(),
+                        onCountryClick = { showCountryPicker = true /*countryViewModel.openPicker()*/ },
                         value = phoneNumber,
                         onValueChange = { phoneNumber = it },
                         placeholder = "555 000 1234"
@@ -158,10 +166,16 @@ fun EnterPhoneNumberScreen(
 
         if (showCountryPicker) {
             CountryPickerDialog(
-                countries = countries,
-                selected = selectedCountry,
-                onDismiss = { countryViewModel.closePicker() },
-                onSelect = { countryViewModel.selectCountry(it) }
+                countries = countryList,
+                selected = countryList.first(),
+                onDismiss = {
+                /*countryViewModel.closePicker() */
+                    showCountryPicker = false
+                },
+                onSelect = {
+                    showCountryPicker = false
+                /*countryViewModel.selectCountry(it)*/
+                }
             )
         }
     }
