@@ -60,7 +60,10 @@ fun PhoneNumberField(
         )
         BasicTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = {
+                val digitsOnly = it.filter { ch -> ch.isDigit() }.take(13)
+                onValueChange(digitsOnly)
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()

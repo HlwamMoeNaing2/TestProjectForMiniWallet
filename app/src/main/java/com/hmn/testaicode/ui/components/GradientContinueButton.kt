@@ -38,23 +38,23 @@ fun GradientContinueButton(
         contentPadding = PaddingValues()
     ) {
         val scheme = MaterialTheme.colorScheme
-        val buttonBrush = if (enabled) {
-            Brush.horizontalGradient(colors = listOf(scheme.primary, scheme.secondary))
-        } else {
-            Brush.horizontalGradient(
-                colors = listOf(
-                    scheme.onSurface.copy(alpha = 0.18f),
-                    scheme.onSurface.copy(alpha = 0.12f),
-                )
+        val enabledSolid = Color(0xFF6E60FF)
+        val disabledBrush = Brush.horizontalGradient(
+            colors = listOf(
+                scheme.primary.copy(alpha = 0.35f),
+                scheme.secondary.copy(alpha = 0.35f),
             )
-        }
+        )
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(28.dp))
                 .background(
-                    brush = buttonBrush
+                    if (enabled) enabledSolid else Color.Transparent
+                )
+                .then(
+                    if (!enabled) Modifier.background(disabledBrush) else Modifier
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -62,7 +62,7 @@ fun GradientContinueButton(
                 text = "Continue",
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (enabled) scheme.onPrimary else scheme.onSurface.copy(alpha = 0.38f)
+                color = if (enabled) Color.White else scheme.onSurface.copy(alpha = 0.38f)
             )
         }
     }
