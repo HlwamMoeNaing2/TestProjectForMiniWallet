@@ -71,15 +71,8 @@ import com.hmn.testaicode.extension.isValidPhone
 
  val ScreenGradientTop = Color(0xFFF3F0FF)
  val ScreenGradientBottom = Color(0xFFFFFBFE)
- val IconGradientStart = Color(0xFF5E35B1)
- val IconGradientEnd = Color(0xFF3949AB)
- val ButtonGradientStart = Color(0xFFB8B5FF)
- val ButtonGradientEnd = Color(0xFFD1C4E9)
  val SubtitleColor = Color(0xFF757575)
  val LabelColor = Color(0xFF9E9E9E)
- val InputStrokeColor = Color(0xFFE8E8E8)
- val CountryChipBg = Color(0xFFF2F2F4)
- val PlaceholderColor = Color(0xFFBDBDBD)
 
 @Composable
 fun EnterPhoneNumberScreen(

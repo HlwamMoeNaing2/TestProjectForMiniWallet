@@ -18,6 +18,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,9 +34,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.data.CountryModel
-import com.hmn.testaicode.ui.screens.CountryChipBg
-import com.hmn.testaicode.ui.screens.InputStrokeColor
-import com.hmn.testaicode.ui.screens.PlaceholderColor
+import com.hmn.testaicode.ui.theme.LumenCountryChipBg
+import com.hmn.testaicode.ui.theme.LumenPlaceholder
 
 @Composable
 fun PhoneNumberField(
@@ -50,8 +50,8 @@ fun PhoneNumberField(
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(28.dp))
-            .border(1.dp, InputStrokeColor, RoundedCornerShape(28.dp))
-            .background(Color.White),
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(28.dp))
+            .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CountryPickerChip(
@@ -83,7 +83,7 @@ fun PhoneNumberField(
                             text = placeholder,
                             style = TextStyle(
                                 fontSize = 17.sp,
-                                color = PlaceholderColor
+                                color = LumenPlaceholder
                             )
                         )
                     }
@@ -103,7 +103,7 @@ fun CountryPickerChip(
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(topStart = 28.dp, bottomStart = 28.dp))
-            .background(CountryChipBg)
+            .background(LumenCountryChipBg)
             .selectable(
                 selected = false,
                 role = Role.Button,

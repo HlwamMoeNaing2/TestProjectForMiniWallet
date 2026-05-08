@@ -14,8 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.hmn.testaicode.ui.screens.IconGradientEnd
-import com.hmn.testaicode.ui.screens.IconGradientStart
+import com.hmn.testaicode.ui.theme.LumenBrandEnd
+import com.hmn.testaicode.ui.theme.LumenBrandStart
 
 @Composable
 fun WalletBrandIcon() {
@@ -25,7 +25,7 @@ fun WalletBrandIcon() {
             .clip(CircleShape)
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(IconGradientStart, IconGradientEnd)
+                    colors = listOf(LumenBrandStart, LumenBrandEnd)
                 )
             ),
         contentAlignment = Alignment.Center
