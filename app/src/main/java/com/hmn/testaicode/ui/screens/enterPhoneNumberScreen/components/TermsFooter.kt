@@ -1,4 +1,4 @@
-package com.hmn.testaicode.ui.components
+package com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
