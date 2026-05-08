@@ -23,9 +23,13 @@ import com.hmn.testaicode.ui.screens.ButtonGradientEnd
 import com.hmn.testaicode.ui.screens.ButtonGradientStart
 
 @Composable
- fun GradientContinueButton(onClick: () -> Unit) {
+fun GradientContinueButton(
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
@@ -34,14 +38,18 @@ import com.hmn.testaicode.ui.screens.ButtonGradientStart
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
         contentPadding = PaddingValues()
     ) {
+        val buttonBrush = if (enabled) {
+            Brush.horizontalGradient(colors = listOf(ButtonGradientStart, ButtonGradientEnd))
+        } else {
+            Brush.horizontalGradient(colors = listOf(Color(0xFFDCDCDC), Color(0xFFCFCFCF)))
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(28.dp))
                 .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(ButtonGradientStart, ButtonGradientEnd)
-                    )
+                    brush = buttonBrush
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -49,7 +57,7 @@ import com.hmn.testaicode.ui.screens.ButtonGradientStart
                 text = "Continue",
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = if (enabled) Color.White else Color(0xFFFAFAFA)
             )
         }
     }

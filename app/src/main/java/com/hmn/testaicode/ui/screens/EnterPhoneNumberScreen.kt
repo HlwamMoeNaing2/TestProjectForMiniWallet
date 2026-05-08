@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.CountryViewModel
@@ -65,6 +67,7 @@ import com.hmn.testaicode.ui.components.TermsFooter
 import com.hmn.testaicode.ui.components.WalletBrandIcon
 import com.hmn.testaicode.ui.components.dialog.CountryPickerDialog
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.extension.isValidPhone
 
  val ScreenGradientTop = Color(0xFFF3F0FF)
  val ScreenGradientBottom = Color(0xFFFFFBFE)
@@ -95,6 +98,7 @@ fun EnterPhoneNumberScreen(
     var phoneNumber by remember { mutableStateOf("") }
 
     var showCountryPicker by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Box(
         modifier = modifier
@@ -157,7 +161,13 @@ fun EnterPhoneNumberScreen(
                         placeholder = "555 000 1234"
                     )
                     Spacer(modifier = Modifier.height(50.dp))
-                    GradientContinueButton(onClick = onContinue)
+                    GradientContinueButton(
+                        enabled = phoneNumber.isValidPhone(),
+                        onClick = {
+                            Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
+                            onContinue()
+                        }
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     TermsFooter()
                 }
