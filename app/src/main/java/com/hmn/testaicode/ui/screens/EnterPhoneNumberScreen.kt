@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -25,8 +28,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,12 +40,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,26 +56,37 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hmn.testaicode.CountryViewModel
+import com.hmn.testaicode.data.CountryModel
+import com.hmn.testaicode.ui.components.GradientContinueButton
+import com.hmn.testaicode.ui.components.PhoneNumberField
+import com.hmn.testaicode.ui.components.TermsFooter
+import com.hmn.testaicode.ui.components.WalletBrandIcon
+import com.hmn.testaicode.ui.components.dialog.CountryPickerDialog
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 
-private val ScreenGradientTop = Color(0xFFF3F0FF)
-private val ScreenGradientBottom = Color(0xFFFFFBFE)
-private val IconGradientStart = Color(0xFF5E35B1)
-private val IconGradientEnd = Color(0xFF3949AB)
-private val ButtonGradientStart = Color(0xFFB8B5FF)
-private val ButtonGradientEnd = Color(0xFFD1C4E9)
-private val SubtitleColor = Color(0xFF757575)
-private val LabelColor = Color(0xFF9E9E9E)
-private val InputStrokeColor = Color(0xFFE8E8E8)
-private val CountryChipBg = Color(0xFFF2F2F4)
-private val PlaceholderColor = Color(0xFFBDBDBD)
+ val ScreenGradientTop = Color(0xFFF3F0FF)
+ val ScreenGradientBottom = Color(0xFFFFFBFE)
+ val IconGradientStart = Color(0xFF5E35B1)
+ val IconGradientEnd = Color(0xFF3949AB)
+ val ButtonGradientStart = Color(0xFFB8B5FF)
+ val ButtonGradientEnd = Color(0xFFD1C4E9)
+ val SubtitleColor = Color(0xFF757575)
+ val LabelColor = Color(0xFF9E9E9E)
+ val InputStrokeColor = Color(0xFFE8E8E8)
+ val CountryChipBg = Color(0xFFF2F2F4)
+ val PlaceholderColor = Color(0xFFBDBDBD)
 
 @Composable
 fun EnterPhoneNumberScreen(
     modifier: Modifier = Modifier,
     onContinue: () -> Unit = {},
+    countryViewModel: CountryViewModel = viewModel(),
 ) {
     var phoneNumber by remember { mutableStateOf("") }
+    val countries by countryViewModel.countries.collectAsState()
+    val selectedCountry by countryViewModel.selectedCountry.collectAsState()
+    val showCountryPicker by countryViewModel.showPicker.collectAsState()
 
     Box(
         modifier = modifier
@@ -123,6 +142,8 @@ fun EnterPhoneNumberScreen(
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     PhoneNumberField(
+                        country = selectedCountry,
+                        onCountryClick = { countryViewModel.openPicker() },
                         value = phoneNumber,
                         onValueChange = { phoneNumber = it },
                         placeholder = "555 000 1234"
@@ -134,150 +155,16 @@ fun EnterPhoneNumberScreen(
                 }
             }
         }
-    }
-}
 
-@Composable
-private fun WalletBrandIcon() {
-    Box(
-        modifier = Modifier
-            .size(52.dp)
-            .clip(CircleShape)
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(IconGradientStart, IconGradientEnd)
-                )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.AccountBalanceWallet,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(26.dp)
-        )
-    }
-}
-
-@Composable
-private fun PhoneNumberField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholder: String,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clip(RoundedCornerShape(28.dp))
-            .border(1.dp, InputStrokeColor, RoundedCornerShape(28.dp))
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(topStart = 28.dp, bottomStart = 28.dp))
-                .background(CountryChipBg)
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = "\uD83C\uDDFA\uD83C\uDDF8",
-                fontSize = 18.sp
-            )
-            Text(
-                text = "+1",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF424242)
-            )
-            Icon(
-                imageVector = Icons.Outlined.KeyboardArrowDown,
-                contentDescription = null,
-                tint = Color(0xFF757575),
-                modifier = Modifier.size(20.dp)
-            )
-        }
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp),
-            textStyle = TextStyle(
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color(0xFF212121)
-            ),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            cursorBrush = SolidColor(Color(0xFF7E57C2)),
-            decorationBox = { inner ->
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    if (value.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = TextStyle(
-                                fontSize = 17.sp,
-                                color = PlaceholderColor
-                            )
-                        )
-                    }
-                    inner()
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun GradientContinueButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(28.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-        contentPadding = PaddingValues()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(28.dp))
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(ButtonGradientStart, ButtonGradientEnd)
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Continue",
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+        if (showCountryPicker) {
+            CountryPickerDialog(
+                countries = countries,
+                selected = selectedCountry,
+                onDismiss = { countryViewModel.closePicker() },
+                onSelect = { countryViewModel.selectCountry(it) }
             )
         }
     }
-}
-
-@Composable
-private fun TermsFooter() {
-    Text(
-        text = "By continuing you agree to our Terms & Privacy.",
-        fontSize = 12.sp,
-        color = LabelColor,
-        lineHeight = 18.sp,
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center
-    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)

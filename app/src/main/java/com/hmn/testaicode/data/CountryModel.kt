@@ -1,26 +1,37 @@
 package com.hmn.testaicode.data
 
+import com.hmn.testaicode.R
+
 data class CountryModel(
-    val image: String,
+    val image: Int,
     val countryCode: String
 )
 
 
-val countryList = listOf<CountryModel>(
+val countryList = listOf(
+
     CountryModel(
-        "mm Image Path",
-        "+95"
+
+        image = R.drawable.mm,
+
+        countryCode = "+95"
+
     ),
 
     CountryModel(
-        "us Image Path",
-        "+1"
+
+        image = R.drawable.us,
+
+        countryCode = "+1"
+
     ),
 
-
     CountryModel(
-        "thai Image Path",
-        "+66"
+
+        image = R.drawable.thai,
+
+        countryCode = "+66"
+
     )
 
 )
