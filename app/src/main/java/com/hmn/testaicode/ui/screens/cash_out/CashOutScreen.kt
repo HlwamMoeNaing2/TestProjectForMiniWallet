@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hmn.testaicode.ui.screens.cash_out.components.WithdrawMethodRow
 import com.hmn.testaicode.ui.theme.LumenGradientBottom
 import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
@@ -275,6 +276,7 @@ fun CashOutScreen(
     }
 }
 
+
 private fun filterMoneyInput(raw: String): String {
     return buildString {
         var dotSeen = false
@@ -299,75 +301,7 @@ private fun filterMoneyInput(raw: String): String {
     }
 }
 
-@Composable
-private fun WithdrawMethodRow(
-    title: String,
-    subtitle: String,
-    icon: ImageVector,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    val scheme = MaterialTheme.colorScheme
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(72.dp),
-        shape = RoundedCornerShape(14.dp),
-        color = scheme.surface,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (selected) scheme.primary.copy(alpha = 0.55f) else scheme.outline.copy(alpha = 0.55f)
-        ),
-        onClick = onClick,
-        shadowElevation = 0.dp,
-        tonalElevation = 0.dp,
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(scheme.primary.copy(alpha = 0.12f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = scheme.primary,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
-            Spacer(modifier = Modifier.size(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = scheme.onSurface
-                )
-                Text(
-                    text = subtitle,
-                    fontSize = 13.sp,
-                    color = scheme.onSurface.copy(alpha = 0.58f)
-                )
-            }
-            if (selected) {
-                Text(
-                    text = "✓",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = scheme.primary
-                )
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
