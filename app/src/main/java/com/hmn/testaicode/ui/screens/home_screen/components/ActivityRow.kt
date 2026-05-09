@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.home_screen.HomeActivityItem
+import com.hmn.testaicode.ui.theme.TestAICodeTheme
 
 @Composable
 fun ActivityRow(item: HomeActivityItem) {
@@ -68,3 +70,18 @@ fun ActivityRow(item: HomeActivityItem) {
         )
     }
 }
+
+@Preview
+@Composable
+private fun PreviewActivityRow() {
+    TestAICodeTheme {
+        ActivityRow(demoHomeActivityItem)
+    }
+}
+
+val demoHomeActivityItem =  HomeActivityItem(
+    title = "Sent to 709809898",
+    subtitle = "May 9, 12:19 PM",
+    amount = "-$9.00",
+    isNegative = true
+)

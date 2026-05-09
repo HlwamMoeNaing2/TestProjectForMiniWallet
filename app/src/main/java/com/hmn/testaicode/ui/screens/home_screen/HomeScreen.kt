@@ -145,7 +145,7 @@ data class HomeActivityItem(
     val isNegative: Boolean,
 )
 
-private fun demoHomeActivity(): List<HomeActivityItem> {
+ fun demoHomeActivity(): List<HomeActivityItem> {
     return List(5) {
         HomeActivityItem(
             title = "Sent to 709809898",

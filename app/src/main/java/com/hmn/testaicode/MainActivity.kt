@@ -22,6 +22,7 @@ import com.hmn.testaicode.ui.screens.idSubmitScreen.IDSubmitScreen
 import com.hmn.testaicode.ui.screens.personalInfo.PersonalInfoSubmitScreen
 import com.hmn.testaicode.ui.screens.profile.ProfileScreen
 import com.hmn.testaicode.ui.screens.selfieSubmitScreen.SelfieSubmitScreen
+import com.hmn.testaicode.ui.screens.transaction_history_full_list.FullTransactionHistoryList
 import com.hmn.testaicode.ui.screens.wallet_transfer.WalletTransferScreen
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
 //                    EnterPhoneNumberScreen(
 //                        Modifier.padding(innerPadding)
 //                    )
-                    HomeScreen( Modifier.padding(innerPadding))
+                    FullTransactionHistoryList( Modifier.padding(innerPadding))
                 }
             }
         }
