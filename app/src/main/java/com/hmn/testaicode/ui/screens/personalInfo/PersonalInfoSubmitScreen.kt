@@ -48,9 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.personalInfo.components.LabeledField
-import com.hmn.testaicode.ui.theme.LumenGradientBottom
-import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun PersonalInfoSubmitScreen(
@@ -76,7 +75,7 @@ fun PersonalInfoSubmitScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(LumenGradientTop, LumenGradientBottom)))
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .imePadding()
             .padding(horizontal = 20.dp, vertical = 16.dp),

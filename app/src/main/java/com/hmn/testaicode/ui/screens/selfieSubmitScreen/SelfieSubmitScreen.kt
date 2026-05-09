@@ -39,9 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.selfieSubmitScreen.components.SelfieFrame
 import com.hmn.testaicode.ui.screens.selfieSubmitScreen.components.TipsBox
-import com.hmn.testaicode.ui.theme.LumenGradientBottom
-import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun SelfieSubmitScreen(
@@ -53,11 +52,7 @@ fun SelfieSubmitScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(LumenGradientTop, LumenGradientBottom)
-                )
-            )
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .padding(horizontal = 20.dp, vertical = 16.dp),
         contentAlignment = Alignment.Center

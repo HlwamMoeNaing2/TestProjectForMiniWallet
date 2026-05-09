@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens.cash_in
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -53,9 +54,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.cash_in.components.PaymentMethodOption
-import com.hmn.testaicode.ui.theme.LumenGradientBottom
-import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun CashInScreen(
@@ -73,7 +73,7 @@ fun CashInScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(LumenGradientTop, LumenGradientBottom)))
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .imePadding()
             .padding(horizontal = 18.dp, vertical = 14.dp),
@@ -286,7 +286,7 @@ private fun filterMoneyInput(raw: String): String {
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true,uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun CashInScreenPreview() {
     TestAICodeTheme {

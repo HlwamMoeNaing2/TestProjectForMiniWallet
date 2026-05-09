@@ -36,16 +36,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.history_detail.components.DetailRow
-import com.hmn.testaicode.ui.theme.LumenGradientBottom
-import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 data class HistoryDetailUiModel(
     val amountDisplay: String = "+$250.00",
@@ -73,7 +71,7 @@ fun HistoryDetailScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(LumenGradientTop, LumenGradientBottom)))
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .padding(horizontal = 18.dp, vertical = 14.dp),
         contentAlignment = Alignment.Center

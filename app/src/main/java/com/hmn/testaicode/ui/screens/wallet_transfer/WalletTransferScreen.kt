@@ -38,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.TextStyle
@@ -50,9 +49,8 @@ import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.wallet_transfer.components.Label
 import com.hmn.testaicode.ui.screens.wallet_transfer.components.PillField
 import com.hmn.testaicode.ui.screens.wallet_transfer.components.SendMoneyButton
-import com.hmn.testaicode.ui.theme.LumenGradientBottom
-import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun WalletTransferScreen(
@@ -73,7 +71,7 @@ fun WalletTransferScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(LumenGradientTop, LumenGradientBottom)))
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .imePadding()
             .padding(horizontal = 18.dp, vertical = 14.dp),

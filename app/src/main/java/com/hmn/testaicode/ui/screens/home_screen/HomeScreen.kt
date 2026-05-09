@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens.home_screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hmn.testaicode.ui.screens.home_screen.components.ActivityRow
@@ -32,9 +34,8 @@ import com.hmn.testaicode.ui.screens.home_screen.components.BalanceCard
 import com.hmn.testaicode.ui.screens.home_screen.components.QuickActionTile
 import com.hmn.testaicode.ui.screens.home_screen.components.RecentHeader
 import com.hmn.testaicode.ui.screens.home_screen.components.TopGreetingRow
-import com.hmn.testaicode.ui.theme.LumenGradientBottom
-import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun HomeScreen(
@@ -57,7 +58,7 @@ fun HomeScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(LumenGradientTop, LumenGradientBottom)))
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .padding(horizontal = 18.dp, vertical = 14.dp)
     ) {
@@ -165,7 +166,7 @@ data class HomeActivityItem(
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = false, showSystemUi = false,uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun HomeScreenPreview() {
     TestAICodeTheme {

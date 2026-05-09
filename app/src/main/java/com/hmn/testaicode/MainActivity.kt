@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
 //                    EnterPhoneNumberScreen(
 //                        Modifier.padding(innerPadding)
 //                    )
-                    FullTransactionHistoryList( Modifier.padding(innerPadding))
+                    CashInScreen( Modifier.padding(innerPadding))
                 }
             }
         }

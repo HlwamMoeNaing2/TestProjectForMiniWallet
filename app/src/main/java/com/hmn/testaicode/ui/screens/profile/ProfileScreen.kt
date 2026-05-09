@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,9 +32,8 @@ import com.hmn.testaicode.ui.screens.profile.components.ProfileHeaderCard
 import com.hmn.testaicode.ui.screens.profile.components.SectionLabel
 import com.hmn.testaicode.ui.screens.profile.components.SettingsGroup
 import com.hmn.testaicode.ui.screens.profile.components.SettingsRow
-import com.hmn.testaicode.ui.theme.LumenGradientBottom
-import com.hmn.testaicode.ui.theme.LumenGradientTop
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun ProfileScreen(
@@ -52,12 +50,11 @@ fun ProfileScreen(
     onLogout: () -> Unit = {},
 ) {
     val scheme = MaterialTheme.colorScheme
-    val bgBrush = Brush.verticalGradient(listOf(LumenGradientTop, LumenGradientBottom))
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(bgBrush)
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 18.dp, vertical = 18.dp)

@@ -14,6 +14,10 @@ val Pink40 = Color(0xFF7D5260)
 val LumenGradientTop = Color(0xFFF3F0FF)
 val LumenGradientBottom = Color(0xFFFFFBFE)
 
+// Dark-mode background gradient (so dark theme stays readable)
+val LumenDarkGradientTop = Color(0xFF0F0F14)
+val LumenDarkGradientBottom = Color(0xFF14141A)
+
 val LumenBrandStart = Color(0xFF5E35B1)
 val LumenBrandEnd = Color(0xFF3949AB)
 
