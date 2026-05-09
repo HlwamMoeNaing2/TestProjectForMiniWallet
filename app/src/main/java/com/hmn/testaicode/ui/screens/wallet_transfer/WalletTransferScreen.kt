@@ -1,9 +1,12 @@
 package com.hmn.testaicode.ui.screens.wallet_transfer
 
+import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,16 +18,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -35,215 +40,267 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hmn.testaicode.ui.screens.wallet_transfer.components.Label
-import com.hmn.testaicode.ui.screens.wallet_transfer.components.PillField
-import com.hmn.testaicode.ui.screens.wallet_transfer.components.SendMoneyButton
+import com.hmn.testaicode.extension.isValidPhone
+import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
+import com.hmn.testaicode.ui.screens.wallet_transfer.components.FieldLabel
+import com.hmn.testaicode.ui.screens.wallet_transfer.components.SendMoneyGradientButton
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun WalletTransferScreen(
     modifier: Modifier = Modifier,
-    availableBalance: String = "$4286.50",
-    onBack: () -> Unit = {},
-    onSend: (amount: String, recipientPhone: String, note: String) -> Unit = { _, _, _ -> },
+    availableBalanceDisplay: String = "$5,234.50",
+    transferFeeDisplay: String = "Free",
+    onSendMoney: (recipient: String, amount: String, note: String) -> Unit = { _, _, _ -> },
 ) {
     val scheme = MaterialTheme.colorScheme
-
+    val context = LocalContext.current
+    var recipient by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
-    var recipientPhone by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
 
     val amountValue = amount.toDoubleOrNull() ?: 0.0
-    val canSend = amountValue > 0.0 && recipientPhone.trim().isNotEmpty()
+    val canSend = recipient.trim().isNotEmpty() && amountValue > 0.0
 
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
+            .padding(top = 26.dp)
             .imePadding()
-            .padding(horizontal = 18.dp, vertical = 14.dp),
+          ,
         contentAlignment = Alignment.Center
     ) {
-        Surface(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(34.dp)),
-            color = scheme.surface.copy(alpha = 0.98f),
-            shadowElevation = 6.dp,
-            tonalElevation = 0.dp,
-            shape = RoundedCornerShape(34.dp)
-        ) {
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+            ,horizontalAlignment = Alignment.CenterHorizontally
+
+        ){
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 22.dp, vertical = 18.dp)
+                    .weight(2f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    ,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Top bar
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Spacer(Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(scheme.primary.copy(alpha = 0.18f)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(scheme.onSurface.copy(alpha = 0.06f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
-                            Icon(
-                                imageVector = Icons.Outlined.ArrowBack,
-                                contentDescription = "Back",
-                                tint = scheme.onSurface
-                            )
-                        }
-                    }
-                    Text(
-                        text = "Transfer",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 40.dp),
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = scheme.onSurface
+                    Icon(
+                        imageVector = Icons.Outlined.Send,
+                        contentDescription = null,
+                        tint = scheme.tertiary,
+                        modifier = Modifier.size(34.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(26.dp))
+                Spacer(modifier = Modifier.height(22.dp))
 
-                // Amount section
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "AMOUNT",
-                        fontSize = 12.sp,
-                        letterSpacing = 1.sp,
-                        color = scheme.onSurface.copy(alpha = 0.45f)
-                    )
-                    Spacer(modifier = Modifier.height(14.dp))
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "$",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = scheme.onSurface.copy(alpha = 0.55f),
-                            modifier = Modifier.padding(bottom = 10.dp, end = 12.dp)
-                        )
-                        BasicTextField(
-                            value = amount,
-                            onValueChange = { raw ->
-                                // digits + max one dot, max 2 decimals, max length guard
-                                val filtered = buildString {
-                                    var dotSeen = false
-                                    var decimals = 0
-                                    for (ch in raw) {
-                                        when {
-                                            ch.isDigit() -> {
-                                                if (dotSeen) {
-                                                    if (decimals < 2) {
-                                                        append(ch); decimals++
-                                                    }
-                                                } else {
-                                                    append(ch)
-                                                }
-                                            }
-                                            ch == '.' && !dotSeen -> {
-                                                dotSeen = true
-                                                append(ch)
-                                            }
-                                        }
-                                        if (length >= 12) break
-                                    }
-                                }
-                                amount = filtered
-                            },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            textStyle = TextStyle(
-                                fontSize = 56.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = scheme.onSurface.copy(alpha = if (amount.isBlank()) 0.28f else 0.55f),
-                                letterSpacing = (-1).sp,
-                                textAlign = TextAlign.Center
-                            ),
-                            decorationBox = { inner ->
-                                Box(contentAlignment = Alignment.CenterStart) {
-                                    if (amount.isBlank()) {
-                                        Text(
-                                            text = "0.00",
-                                            fontSize = 56.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = scheme.onSurface.copy(alpha = 0.28f),
-                                            letterSpacing = (-1).sp
-                                        )
-                                    }
-                                    inner()
-                                }
-                            }
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "Available $availableBalance",
-                        fontSize = 13.sp,
-                        color = scheme.onSurface.copy(alpha = 0.45f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Label("RECIPIENT PHONE")
+                FieldLabel(text = "Recipient", scheme = scheme)
                 Spacer(modifier = Modifier.height(10.dp))
-                PillField(
-                    value = recipientPhone,
-                    onValueChange = {
-                        // keep digits + + and spaces (simple)
-                        recipientPhone = it.take(20)
+                OutlinedTextField(
+                    value = recipient,
+                    onValueChange = { recipient = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    singleLine = true,
+                    shape = RoundedCornerShape(14.dp),
+                    placeholder = {
+                        Text(
+                            text = "Enter name or phone number",
+                            color = scheme.onSurface.copy(alpha = 0.40f),
+                            fontSize = 15.sp
+                        )
                     },
-                    placeholder = "+1 415 555 0000",
-                    keyboardType = KeyboardType.Phone
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null,
+                            tint = scheme.onSurface.copy(alpha = 0.55f)
+                        )
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = scheme.onSurface.copy(alpha = 0.92f)
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = scheme.primary.copy(alpha = 0.85f),
+                        unfocusedBorderColor = scheme.outline.copy(alpha = 0.65f),
+                        focusedContainerColor = scheme.surface,
+                        unfocusedContainerColor = scheme.surface,
+                        cursorColor = scheme.primary,
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                Label("NOTE (OPTIONAL)")
+                FieldLabel(text = "Amount", scheme = scheme)
                 Spacer(modifier = Modifier.height(10.dp))
-                PillField(
+                OutlinedTextField(
+                    value = amount,
+                    onValueChange = { amount = filterMoneyInput(it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+                    singleLine = true,
+                    shape = RoundedCornerShape(14.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    placeholder = {
+                        Text(
+                            text = "0.00",
+                            color = scheme.onSurface.copy(alpha = 0.40f),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    leadingIcon = {
+                        Text(
+                            text = "$",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = scheme.onSurface.copy(alpha = 0.65f),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = scheme.onSurface.copy(alpha = 0.92f)
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = scheme.primary.copy(alpha = 0.85f),
+                        unfocusedBorderColor = scheme.outline.copy(alpha = 0.65f),
+                        focusedContainerColor = scheme.surface,
+                        unfocusedContainerColor = scheme.surface,
+                        cursorColor = scheme.primary,
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                FieldLabel(text = "Note (Optional)", scheme = scheme)
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
                     value = note,
-                    onValueChange = { note = it.take(60) },
-                    placeholder = "Dinner, rent...",
-                    keyboardType = KeyboardType.Text
+                    onValueChange = { note = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    minLines = 4,
+                    maxLines = 6,
+                    shape = RoundedCornerShape(14.dp),
+                    placeholder = {
+                        Text(
+                            text = "Add a note",
+                            color = scheme.onSurface.copy(alpha = 0.40f),
+                            fontSize = 15.sp
+                        )
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = scheme.onSurface.copy(alpha = 0.92f)
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = scheme.primary.copy(alpha = 0.85f),
+                        unfocusedBorderColor = scheme.outline.copy(alpha = 0.65f),
+                        focusedContainerColor = scheme.surface,
+                        unfocusedContainerColor = scheme.surface,
+                        cursorColor = scheme.primary,
+                    )
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(22.dp))
 
-                SendMoneyButton(
-                    enabled = canSend,
-                    onClick = { onSend(amount, recipientPhone, note) }
-                )
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = scheme.primary.copy(alpha = 0.12f)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Available Balance",
+                                fontSize = 14.sp,
+                                color = scheme.onSurface.copy(alpha = 0.72f)
+                            )
+                            Text(
+                                text = availableBalanceDisplay,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = scheme.onSurface
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Transfer Fee",
+                                fontSize = 14.sp,
+                                color = scheme.onSurface.copy(alpha = 0.72f)
+                            )
+                            Text(
+                                text = transferFeeDisplay,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = scheme.primary
+                            )
+                        }
+                    }
+                }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+
             }
+            Spacer(modifier = Modifier.height(10.dp))
+
+            GradientContinueButton(
+                enabled = canSend,
+                onClick = {
+                    Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
+                    onSendMoney(recipient.trim(), amount, note.trim())
+                }
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+
         }
+
     }
 }
 
@@ -251,9 +308,32 @@ fun WalletTransferScreen(
 
 
 
+private fun filterMoneyInput(raw: String): String {
+    return buildString {
+        var dotSeen = false
+        var decimals = 0
+        for (ch in raw) {
+            when {
+                ch.isDigit() -> {
+                    if (dotSeen) {
+                        if (decimals < 2) {
+                            append(ch)
+                            decimals++
+                        }
+                    } else append(ch)
+                }
 
+                ch == '.' && !dotSeen -> {
+                    dotSeen = true
+                    append(ch)
+                }
+            }
+            if (length >= 12) break
+        }
+    }
+}
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun WalletTransferScreenPreview() {
     TestAICodeTheme {
