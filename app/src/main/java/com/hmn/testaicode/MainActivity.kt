@@ -25,7 +25,9 @@ import com.hmn.testaicode.ui.screens.selfieSubmitScreen.SelfieSubmitScreen
 import com.hmn.testaicode.ui.screens.transaction_history_full_list.FullTransactionHistoryList
 import com.hmn.testaicode.ui.screens.wallet_transfer.WalletTransferScreen
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
