@@ -159,6 +159,30 @@ object BitmapUtils {
     }
 
 
+    /**
+     * Decodes a JPEG [ImageProxy] from [ImageCapture] and applies [androidx.camera.core.ImageInfo.rotationDegrees]
+     * so the bitmap is upright (sensor orientation corrected).
+     */
+    fun bitmapFromJpegImageProxy(imageProxy: ImageProxy): Bitmap {
+        val buffer = imageProxy.planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        val decoded =
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                ?: throw IllegalStateException("Unable to decode captured image")
+        val rotation = imageProxy.imageInfo.rotationDegrees
+        if (rotation == 0) return decoded
+        return try {
+            val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
+            val rotated =
+                Bitmap.createBitmap(decoded, 0, 0, decoded.width, decoded.height, matrix, true)
+            if (rotated != decoded) decoded.recycle()
+            rotated
+        } catch (_: Exception) {
+            decoded
+        }
+    }
+
     fun flipBitmapHorizontallySafe(bitmap: Bitmap): Bitmap {
         if (bitmap.isRecycled) return bitmap
         if (bitmap.width <= 0 || bitmap.height <= 0) return bitmap

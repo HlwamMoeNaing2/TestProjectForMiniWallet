@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">TestAICode</string>
+    <string name="selfie_screen_title">မျက်နှာပုံ</string>
+    <string name="selfie_instruction_title">မျက်နှာကို ဘေးအကွက်အတွင်း တပ်ပါ</string>
+    <string name="selfie_instruction_body">မျက်မှန်၊ မျက်နှာဖုံးနှင့် အခြားအတားအဆီးများ ဖယ်ရှားပါ။ မျက်နှာအလင်းရောင်ပြည့်ဝစေရန် သေချာပါစေ။</string>
+    <string name="selfie_submit">တင်သွင်းမည်</string>
+    <string name="selfie_camera_permission_required">ကင်မရာခွင့်ပြုချက် လိုအပ်ပါသည်</string>
+    <string name="selfie_grant_permission">ခွင့်ပြုပါ</string>
+    <string name="selfie_flip_camera">ကင်မရာပြောင်းရန်</string>
+    <string name="selfie_capture_preview_hint">ရိုက်ကူးပြီးပါပီ — တင်သွင်းရန် နှိပ်ပါ</string>
+    <string name="selfie_help_title">အကူအညီ</string>
+    <string name="selfie_help_message">မျက်နှာကို အစိမ်းရောင်အဝိုင်းအတွင်း ပြည့်စုံစွာ ထည့်ပါ။ နေရောင်ခြည်မကောင်းပါက တူးလိုက်ကို သုံးပါ။</string>
+    <string name="selfie_capture_failed">ရိုက်ကူးမှု မအောင်မြင်ပါ</string>
+    <string name="selfie_submit_no_photo">အရင်ဆုံး ဓာတ်ပုံရိုက်ကူးပါ</string>
 </resources>
