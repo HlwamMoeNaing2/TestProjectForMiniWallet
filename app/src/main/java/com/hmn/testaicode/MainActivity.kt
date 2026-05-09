@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.hmn.testaicode.ui.screens.cash_in.CashInScreen
+import com.hmn.testaicode.ui.screens.cash_out.CashOutScreen
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.EnterPhoneNumberScreen
 import com.hmn.testaicode.ui.screens.idSubmitScreen.IDSubmitScreen
 import com.hmn.testaicode.ui.screens.personalInfo.PersonalInfoSubmitScreen
@@ -41,7 +43,7 @@ class MainActivity : ComponentActivity() {
 //                    EnterPhoneNumberScreen(
 //                        Modifier.padding(innerPadding)
 //                    )
-                    WalletTransferScreen( Modifier.padding(innerPadding))
+                    CashOutScreen( Modifier.padding(innerPadding))
                 }
             }
         }
