@@ -54,13 +54,13 @@ fun HomeScreen(
     onToggleBalanceVisibility: () -> Unit = {},
 ) {
     val scheme = MaterialTheme.colorScheme
-
+//   .windowInsetsPadding(WindowInsets.systemBars)
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(appBackgroundBrush())
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .padding(horizontal = 18.dp, vertical = 14.dp)
+
+            .padding(horizontal = 18.dp)
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -166,7 +166,7 @@ data class HomeActivityItem(
 
 
 
-@Preview(showBackground = false, showSystemUi = false,uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = false, showSystemUi = false,uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun HomeScreenPreview() {
     TestAICodeTheme {

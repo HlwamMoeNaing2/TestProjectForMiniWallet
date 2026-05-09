@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens.cash_out
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,11 +46,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.cash_out.components.WithdrawMethodRow
+import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
@@ -60,7 +63,7 @@ fun CashOutScreen(
     onWithdraw: (String, CashOutMethod) -> Unit = { _, _ -> },
 ) {
     val scheme = MaterialTheme.colorScheme
-
+    val context = LocalContext.current
     var amount by remember { mutableStateOf("") }
     var selectedMethod by remember { mutableStateOf(CashOutMethod.BankTransfer) }
 
@@ -73,7 +76,7 @@ fun CashOutScreen(
             .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .imePadding()
-            .padding(horizontal = 18.dp, vertical = 14.dp),
+            .padding(horizontal = 18.dp, vertical = 40.dp),
         contentAlignment = Alignment.Center
     ) {
         Surface(
@@ -197,7 +200,7 @@ fun CashOutScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    listOf(20, 50, 100, 200).forEach { preset ->
+                    listOf(20, 50, 100).forEach { preset ->
                         OutlinedButton(
                             onClick = { amount = preset.toString() },
                             modifier = Modifier
@@ -247,6 +250,15 @@ fun CashOutScreen(
 
                 Spacer(modifier = Modifier.height(28.dp))
 
+                GradientContinueButton(
+                    enabled = canWithdraw,
+                    onClick = {
+                        Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
+                        onWithdraw(amount, selectedMethod)
+                    }
+                )
+
+/*
                 Button(
                     onClick = { onWithdraw(amount, selectedMethod) },
                     enabled = canWithdraw,
@@ -267,6 +279,7 @@ fun CashOutScreen(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+ */
 
                 Spacer(modifier = Modifier.height(16.dp))
             }

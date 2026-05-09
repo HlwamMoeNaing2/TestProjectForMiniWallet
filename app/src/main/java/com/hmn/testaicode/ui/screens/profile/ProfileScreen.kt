@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens.profile
 
+import android.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,78 +53,84 @@ fun ProfileScreen(
 ) {
     val scheme = MaterialTheme.colorScheme
 
+
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(appBackgroundBrush())
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 18.dp, vertical = 18.dp)
-    ) {
-        Spacer(Modifier.height(46.dp))
-        Text(
-            text = "Profile",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = scheme.onBackground
-        )
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ProfileHeaderCard(
-            initials = initials,
-            name = name,
-            phone = phone
-        )
-
-        Spacer(modifier = Modifier.height(22.dp))
-
-        SectionLabel("ACCOUNT")
-        Spacer(modifier = Modifier.height(10.dp))
-        SettingsGroup {
-            SettingsRow(
-                icon = Icons.Outlined.CreditCard,
-                title = "Payment methods",
-                onClick = onPaymentMethods
+    ){
+        Column(
+            modifier = modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(appBackgroundBrush())
+                .windowInsetsPadding(WindowInsets.systemBars)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 18.dp)
+        ) {
+            Spacer(Modifier.height(46.dp))
+            Text(
+                text = "Profile",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = scheme.onBackground
             )
-            Divider()
-            SettingsRow(
-                icon = Icons.Outlined.Lock,
-                title = "Security & PIN",
-                onClick = onSecurityPin
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ProfileHeaderCard(
+                initials = initials,
+                name = name,
+                phone = phone
             )
-            Divider()
-            SettingsRow(
-                icon = Icons.Outlined.NotificationsNone,
-                title = "Notifications",
-                onClick = onNotifications
-            )
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            SectionLabel("ACCOUNT")
+            Spacer(modifier = Modifier.height(10.dp))
+            SettingsGroup {
+                SettingsRow(
+                    icon = Icons.Outlined.CreditCard,
+                    title = "Payment methods",
+                    onClick = onPaymentMethods
+                )
+                Divider()
+                SettingsRow(
+                    icon = Icons.Outlined.Lock,
+                    title = "Security & PIN",
+                    onClick = onSecurityPin
+                )
+                Divider()
+                SettingsRow(
+                    icon = Icons.Outlined.NotificationsNone,
+                    title = "Notifications",
+                    onClick = onNotifications
+                )
+            }
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            SectionLabel("SUPPORT")
+            Spacer(modifier = Modifier.height(10.dp))
+            SettingsGroup {
+                SettingsRow(
+                    icon = Icons.Outlined.HelpOutline,
+                    title = "Help center",
+                    onClick = onHelpCenter
+                )
+                Divider()
+                SettingsRow(
+                    icon = Icons.Outlined.Settings,
+                    title = "Preferences",
+                    onClick = onPreferences
+                )
+            }
+
         }
-
-        Spacer(modifier = Modifier.height(22.dp))
-
-        SectionLabel("SUPPORT")
-        Spacer(modifier = Modifier.height(10.dp))
-        SettingsGroup {
-            SettingsRow(
-                icon = Icons.Outlined.HelpOutline,
-                title = "Help center",
-                onClick = onHelpCenter
-            )
-            Divider()
-            SettingsRow(
-                icon = Icons.Outlined.Settings,
-                title = "Preferences",
-                onClick = onPreferences
-            )
-        }
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        LogoutRow(onClick = onLogout)
-
-        Spacer(modifier = Modifier.height(22.dp))
-
+      LogoutRow(
+          modifier  = Modifier.padding(horizontal = 16.dp),
+          onClick = onLogout)
         Text(
             text = "Lumen Wallet • $appVersion",
             modifier = Modifier.fillMaxWidth(),
@@ -131,8 +139,10 @@ fun ProfileScreen(
             color = scheme.onBackground.copy(alpha = 0.45f)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(50.dp))
     }
+
+
 }
 
 

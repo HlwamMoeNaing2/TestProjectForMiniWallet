@@ -94,7 +94,7 @@ fun HistoryDetailScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(76.dp)
+                        .size(56.dp)
                         .clip(CircleShape)
                         .background(positiveColor.copy(alpha = 0.14f)),
                     contentAlignment = Alignment.Center

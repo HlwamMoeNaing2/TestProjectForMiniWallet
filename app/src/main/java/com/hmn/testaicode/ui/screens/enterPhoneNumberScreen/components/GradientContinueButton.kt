@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun GradientContinueButton(
+    text: String = "Continue",
     enabled: Boolean,
     onClick: () -> Unit,
 ) {
@@ -59,7 +60,7 @@ fun GradientContinueButton(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Continue",
+                text = text,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (enabled) Color.White else scheme.onSurface.copy(alpha = 0.38f)

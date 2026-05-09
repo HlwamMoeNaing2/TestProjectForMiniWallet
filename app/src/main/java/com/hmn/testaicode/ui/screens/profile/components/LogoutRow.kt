@@ -22,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
- fun LogoutRow(onClick: () -> Unit) {
+ fun LogoutRow(
+    modifier: Modifier,
+    onClick: () -> Unit) {
     val scheme = MaterialTheme.colorScheme
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier =modifier,
         shape = RoundedCornerShape(18.dp),
         color = scheme.surface,
         tonalElevation = 0.dp,

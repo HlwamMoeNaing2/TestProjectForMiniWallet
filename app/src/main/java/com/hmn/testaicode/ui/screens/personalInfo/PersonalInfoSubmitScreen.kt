@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens.personalInfo
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -41,12 +42,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
 import com.hmn.testaicode.ui.screens.personalInfo.components.LabeledField
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import com.hmn.testaicode.ui.theme.appBackgroundBrush
@@ -64,7 +67,7 @@ fun PersonalInfoSubmitScreen(
     ) -> Unit = { _, _, _, _, _, _ -> },
 ) {
     val scheme = MaterialTheme.colorScheme
-
+    val context = LocalContext.current
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -78,27 +81,29 @@ fun PersonalInfoSubmitScreen(
             .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .imePadding()
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+           .padding(vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Card(
+
+
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 6.dp),
-            shape = RoundedCornerShape(28.dp),
-            colors = CardDefaults.cardColors(containerColor = scheme.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-        ) {
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ){
             Column(
                 modifier = Modifier
+                    .weight(1f)
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 22.dp, vertical = 26.dp),
+                    .padding( vertical = 26.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
                     modifier = Modifier
-                        .size(72.dp)
+                        .size(56.dp)
                         .clip(CircleShape)
                         .background(scheme.primary.copy(alpha = 0.14f)),
                     contentAlignment = Alignment.Center
@@ -188,36 +193,24 @@ fun PersonalInfoSubmitScreen(
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                val buttonBrush = Brush.horizontalGradient(listOf(scheme.primary, scheme.secondary))
-                Button(
-                    onClick = { onSubmit(firstName, lastName, email, address, city, zip) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = scheme.onPrimary
-                    )
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(buttonBrush),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Submit & Continue",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
 
                 Spacer(modifier = Modifier.height(6.dp))
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            GradientContinueButton(
+                text = "Submit",
+                enabled = true,
+                onClick = {
+                    Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
+                    onSubmit(firstName, lastName, email, address, city, zip)
+                }
+            )
+
+
         }
+
     }
 }
 

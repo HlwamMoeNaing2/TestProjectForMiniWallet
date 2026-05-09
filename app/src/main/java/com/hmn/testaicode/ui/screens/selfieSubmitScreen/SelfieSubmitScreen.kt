@@ -57,119 +57,113 @@ fun SelfieSubmitScreen(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Card(
+
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 6.dp),
-            shape = RoundedCornerShape(28.dp),
-            colors = CardDefaults.cardColors(containerColor = scheme.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                .padding(horizontal = 22.dp, vertical = 26.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Box(
+                modifier = Modifier
+                    .size(72.dp)
+                    .clip(CircleShape)
+                    .background(scheme.primary.copy(alpha = 0.14f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.PersonOutline,
+                    contentDescription = null,
+                    tint = scheme.primary,
+                    modifier = Modifier.size(34.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Text(
+                text = "Capture Your Selfie",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = scheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "Take a clear photo of your face for verification",
+                fontSize = 14.sp,
+                color = scheme.onSurface.copy(alpha = 0.62f),
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp
+            )
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            SelfieFrame(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 22.dp, vertical = 26.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .height(210.dp),
+                accent = scheme.primary,
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            TipsBox(
+                modifier = Modifier.fillMaxWidth(),
+                bulletColor = scheme.primary,
+                container = scheme.primary.copy(alpha = 0.08f),
+                textColor = scheme.onSurface.copy(alpha = 0.78f),
+                tips = listOf(
+                    "Remove glasses and face coverings",
+                    "Ensure good lighting",
+                    "Look directly at the camera",
+                )
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            val buttonBrush = Brush.horizontalGradient(listOf(scheme.primary, scheme.secondary))
+            Button(
+                onClick = onTakeSelfie,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(60.dp)
+                ,
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = scheme.onPrimary,
+                )
             ) {
                 Box(
                     modifier = Modifier
-                        .size(72.dp)
-                        .clip(CircleShape)
-                        .background(scheme.primary.copy(alpha = 0.14f)),
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(buttonBrush),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.PersonOutline,
-                        contentDescription = null,
-                        tint = scheme.primary,
-                        modifier = Modifier.size(34.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                Text(
-                    text = "Capture Your Selfie",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = scheme.onSurface,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = "Take a clear photo of your face for verification",
-                    fontSize = 14.sp,
-                    color = scheme.onSurface.copy(alpha = 0.62f),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 20.sp
-                )
-
-                Spacer(modifier = Modifier.height(22.dp))
-
-                SelfieFrame(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(210.dp),
-                    accent = scheme.primary,
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                TipsBox(
-                    modifier = Modifier.fillMaxWidth(),
-                    bulletColor = scheme.primary,
-                    container = scheme.primary.copy(alpha = 0.08f),
-                    textColor = scheme.onSurface.copy(alpha = 0.78f),
-                    tips = listOf(
-                        "Remove glasses and face coverings",
-                        "Ensure good lighting",
-                        "Look directly at the camera",
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                val buttonBrush = Brush.horizontalGradient(listOf(scheme.primary, scheme.secondary))
-                Button(
-                    onClick = onTakeSelfie,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = scheme.onPrimary,
-                    )
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(buttonBrush),
-                        contentAlignment = Alignment.Center
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.CameraAlt,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Text(
-                                text = "Take Selfie",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Outlined.CameraAlt,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Text(
+                            text = "Take Selfie",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
         }
+
     }
 }
 

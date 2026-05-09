@@ -1,6 +1,7 @@
 package com.hmn.testaicode.ui.screens.cash_in
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,13 +48,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hmn.testaicode.extension.isValidPhone
 import com.hmn.testaicode.ui.screens.cash_in.components.PaymentMethodOption
+import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
@@ -62,6 +66,8 @@ fun CashInScreen(
     modifier: Modifier = Modifier,
     onAddMoney: (String, CashInMethod) -> Unit = { _, _ -> },
 ) {
+
+    val context = LocalContext.current
     val scheme = MaterialTheme.colorScheme
 
     var amount by remember { mutableStateOf("") }
@@ -167,7 +173,7 @@ fun CashInScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    listOf(50, 100, 200, 500).forEach { preset ->
+                    listOf(50, 100, 200).forEach { preset ->
                         OutlinedButton(
                             onClick = { amount = preset.toString() },
                             modifier = Modifier
@@ -226,33 +232,16 @@ fun CashInScreen(
                         scheme.secondary.copy(alpha = 0.28f),
                     )
                 )
-                Button(
-                    onClick = { onAddMoney(amount, selectedMethod) },
+
+
+                GradientContinueButton(
                     enabled = canSubmit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-                    contentPadding = ButtonDefaults.ContentPadding,
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(if (canSubmit) gradient else disabledGradient),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Add Money",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (canSubmit) scheme.onPrimary else scheme.onSurface.copy(alpha = 0.45f)
-                        )
+                    onClick = {
+                        Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
+                        onAddMoney(amount, selectedMethod)
                     }
-                }
+                )
+
 
                 Spacer(modifier = Modifier.height(12.dp))
             }
@@ -286,7 +275,7 @@ private fun filterMoneyInput(raw: String): String {
 
 
 
-@Preview(showBackground = true, showSystemUi = true,uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, showSystemUi = true,uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun CashInScreenPreview() {
     TestAICodeTheme {
