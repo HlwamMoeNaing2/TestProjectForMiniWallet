@@ -14,6 +14,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.hmn.testaicode.ui.screens.face_capture.FaceDetectionScreen
+import com.hmn.testaicode.ui.screens.id_matching.SelfieMatchingScreen
 
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
 //                    EnterPhoneNumberScreen(
 //                        Modifier.padding(innerPadding)
 //                    )
-                    FaceDetectionScreen ( Modifier.padding(innerPadding))
+                    SelfieMatchingScreen ( Modifier.padding(innerPadding))
                 }
             }
         }

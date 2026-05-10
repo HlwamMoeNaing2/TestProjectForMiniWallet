@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.abs
@@ -46,12 +47,15 @@ class FaceDetector(
                 mediaImage, imageProxy.imageInfo.rotationDegrees,
             )
 
-            suspendCoroutine<Unit> { continuation ->
+            suspendCancellableCoroutine<Unit> { continuation ->
                 faceDetector.process(inputImage)
                     .addOnSuccessListener { faces ->
                         val isFaceDetected = faces.any {
                             isFaceInsideOval(
-                                Offset(it.boundingBox.centerX().toFloat(), it.boundingBox.centerY().toFloat()),
+                                Offset(
+                                    it.boundingBox.centerX().toFloat(),
+                                    it.boundingBox.centerY().toFloat()
+                                ),
                                 it.boundingBox.width().toFloat(),
                                 it.boundingBox.height().toFloat()
                             )

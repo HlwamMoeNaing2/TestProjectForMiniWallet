@@ -2,6 +2,7 @@ package com.hmn.testaicode.ui.screens.face_capture
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
@@ -54,16 +55,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.hmn.testaicode.R
+import com.hmn.testaicode.ui.screens.cash_in.CashInScreen
 import com.hmn.testaicode.ui.screens.face_capture.components.CameraView
 import com.hmn.testaicode.ui.screens.face_capture.components.CapturePhotoButton
 import com.hmn.testaicode.ui.screens.face_capture.components.CapturedPhotoView
 import com.hmn.testaicode.ui.screens.face_capture.components.OvalOverlay
 import com.hmn.testaicode.ui.screens.face_capture.components.SubmitPhotoButton
+import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import java.util.concurrent.Executor
 
 private const val OVAL_WIDTH_DP = 250
@@ -74,7 +79,7 @@ private const val OVAL_HEIGHT_DP = 300
 @Composable
 fun FaceDetectionScreen(modifier: Modifier) {
     val context: Context = LocalContext.current
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner: LifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
     var isCameraShown by remember { mutableStateOf(true) }
     var isFaceDetected by remember { mutableStateOf(false) }
@@ -165,12 +170,6 @@ fun FaceDetectionScreen(modifier: Modifier) {
 }
 
 
-
-
-
-
-
-
 private fun capturePhotoAndReplaceBackground(
     context: Context,
     cameraController: LifecycleCameraController,
@@ -233,4 +232,13 @@ private fun startFaceDetection(
 
 
 
+
+
+@Preview(showBackground = true, showSystemUi = true,uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun FaceDetectionScreenPreview() {
+    TestAICodeTheme {
+        FaceDetectionScreen(Modifier.fillMaxSize())
+    }
+}
 
