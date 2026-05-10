@@ -5,17 +5,10 @@ import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.compose.ui.geometry.Offset
+import android.util.Log
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetector
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import com.google.mlkit.vision.face.FaceDetector as MlKitFaceDetector
 import kotlin.math.abs
 
 class FaceDetector(
@@ -26,54 +19,82 @@ class FaceDetector(
 ) : ImageAnalysis.Analyzer {
 
     companion object {
-        private const val THROTTLE_TIMEOUT_MS = 4_00L
         private const val MIN_FACE_SIZE = 50f
         private const val FACE_SIZE_MULTIPLIER = 3.5f
         private const val FACE_POSITION_ACCURACY = 0.3f
+        private const val DETECT_CONFIRM_FRAMES = 2
+        private const val LOST_CONFIRM_FRAMES = 3
+        private const val TAG = "FaceDetector"
     }
 
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val faceDetector: FaceDetector = FaceDetection.getClient()
+    private val faceDetector: MlKitFaceDetector = FaceDetection.getClient()
+    private var stableDetected = false
+    private var detectedFrames = 0
+    private var lostFrames = 0
+    private var frameCount = 0
 
     @OptIn(ExperimentalGetImage::class)
     override fun analyze(imageProxy: ImageProxy) {
-        scope.launch {
-            val mediaImage = imageProxy.image ?: run {
-                imageProxy.close()
-                return@launch
-            }
-
-            val inputImage = InputImage.fromMediaImage(
-                mediaImage, imageProxy.imageInfo.rotationDegrees,
-            )
-
-            suspendCancellableCoroutine<Unit> { continuation ->
-                faceDetector.process(inputImage)
-                    .addOnSuccessListener { faces ->
-                        val isFaceDetected = faces.any {
-                            isFaceInsideOval(
-                                Offset(
-                                    it.boundingBox.centerX().toFloat(),
-                                    it.boundingBox.centerY().toFloat()
-                                ),
-                                it.boundingBox.width().toFloat(),
-                                it.boundingBox.height().toFloat()
-                            )
-                        }
-                        onFaceDetected(isFaceDetected)
-                    }
-                    .addOnFailureListener { exception ->
-                        exception.printStackTrace()
-                    }
-                    .addOnCompleteListener {
-                        continuation.resume(Unit)
-                    }
-            }
-
-            delay(THROTTLE_TIMEOUT_MS)
-        }.invokeOnCompletion { exception ->
-            exception?.printStackTrace()
+        frameCount += 1
+        val mediaImage = imageProxy.image ?: run {
+            Log.w(TAG, "Frame#$frameCount has null mediaImage")
             imageProxy.close()
+            return
+        }
+
+        val inputImage = InputImage.fromMediaImage(
+            mediaImage,
+            imageProxy.imageInfo.rotationDegrees,
+        )
+
+        faceDetector.process(inputImage)
+            .addOnSuccessListener { faces ->
+                if (frameCount % 10 == 0) {
+                    Log.d(
+                        TAG,
+                        "Frame#$frameCount faces=${faces.size} stable=$stableDetected detectedFrames=$detectedFrames lostFrames=$lostFrames"
+                    )
+                }
+                val detectedInThisFrame = faces.any {
+                    isFaceInsideOval(
+                        faceCenter = Offset(
+                            it.boundingBox.centerX().toFloat(),
+                            it.boundingBox.centerY().toFloat()
+                        ),
+                        faceWidth = it.boundingBox.width().toFloat(),
+                        faceHeight = it.boundingBox.height().toFloat(),
+                    )
+                }
+                if (frameCount % 10 == 0) {
+                    Log.d(TAG, "Frame#$frameCount detectedInFrame=$detectedInThisFrame")
+                }
+                emitSmoothedDetection(detectedInThisFrame)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "MLKit process failed on frame#$frameCount: ${exception.message}", exception)
+            }
+            .addOnCompleteListener {
+                imageProxy.close()
+            }
+    }
+
+    private fun emitSmoothedDetection(detectedInFrame: Boolean) {
+        if (detectedInFrame) {
+            detectedFrames += 1
+            lostFrames = 0
+            if (!stableDetected && detectedFrames >= DETECT_CONFIRM_FRAMES) {
+                stableDetected = true
+                Log.d(TAG, "Stable state -> DETECTED at frame#$frameCount")
+                onFaceDetected(true)
+            }
+        } else {
+            lostFrames += 1
+            detectedFrames = 0
+            if (stableDetected && lostFrames >= LOST_CONFIRM_FRAMES) {
+                stableDetected = false
+                Log.d(TAG, "Stable state -> LOST at frame#$frameCount")
+                onFaceDetected(false)
+            }
         }
     }
 

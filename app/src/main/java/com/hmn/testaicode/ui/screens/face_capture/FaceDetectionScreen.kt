@@ -4,36 +4,30 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.view.ViewGroup.LayoutParams
-import android.widget.LinearLayout
+import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,29 +35,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.ClipOp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.hmn.testaicode.R
 import com.hmn.testaicode.ui.screens.LifecycleLogger
-import com.hmn.testaicode.ui.screens.cash_in.CashInScreen
 import com.hmn.testaicode.ui.screens.face_capture.components.CameraView
 import com.hmn.testaicode.ui.screens.face_capture.components.CapturePhotoButton
 import com.hmn.testaicode.ui.screens.face_capture.components.CapturedPhotoView
@@ -74,11 +54,12 @@ import java.util.concurrent.Executor
 
 private const val OVAL_WIDTH_DP = 250
 private const val OVAL_HEIGHT_DP = 300
+private const val FACE_CAPTURE_TAG = "FaceDetectionScreen"
 
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun FaceDetectionScreen(modifier: Modifier) {
+fun FaceDetectionScreen(modifier: Modifier = Modifier) {
     LifecycleLogger("FaceDetectionScreen")
     val context: Context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -89,17 +70,60 @@ fun FaceDetectionScreen(modifier: Modifier) {
     var capturedPhoto by remember { mutableStateOf<ImageBitmap?>(null) }
     var ovalCenter by remember { mutableStateOf<Offset?>(null) }
 
-    val cameraController: LifecycleCameraController =
-        remember { LifecycleCameraController(context) }
-    cameraController.cameraSelector =
-        CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
+    val cameraController: LifecycleCameraController = remember {
+        LifecycleCameraController(context).apply {
+            Log.d(FACE_CAPTURE_TAG, "Creating LifecycleCameraController")
+            cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+            imageAnalysisTargetSize = CameraController.OutputSize(AspectRatio.RATIO_16_9)
+            imageAnalysisBackpressureStrategy = ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
+            setEnabledUseCases(
+                CameraController.IMAGE_CAPTURE or
+                    CameraController.IMAGE_ANALYSIS
+            )
+        }
+    }
 
     val cameraPreviewView = remember {
         mutableStateOf(PreviewView(context))
     }
 
+    LaunchedEffect(lifecycleOwner) {
+        Log.d(FACE_CAPTURE_TAG, "Binding camera controller to lifecycle")
+        cameraController.bindToLifecycle(lifecycleOwner)
+    }
+    LaunchedEffect(cameraPreviewView.value, isCameraShown) {
+        if (isCameraShown) {
+            Log.d(FACE_CAPTURE_TAG, "Attaching controller to PreviewView")
+            cameraPreviewView.value.controller = cameraController
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            Log.d(FACE_CAPTURE_TAG, "Clearing analyzer on dispose")
+            cameraController.clearImageAnalysisAnalyzer()
+        }
+    }
+    LaunchedEffect(ovalCenter) {
+        val center = ovalCenter ?: return@LaunchedEffect
+        Log.d(FACE_CAPTURE_TAG, "Setting analyzer with ovalCenter=$center")
+        cameraController.setImageAnalysisAnalyzer(
+            ContextCompat.getMainExecutor(context),
+            FaceDetector(
+                onFaceDetected = { detected ->
+                    if (isFaceDetected != detected) {
+                        Log.d(FACE_CAPTURE_TAG, "onFaceDetected changed: $isFaceDetected -> $detected")
+                        isFaceDetected = detected
+                    }
+                },
+                ovalCenter = center,
+                ovalRadiusX = OVAL_WIDTH_DP / 2f,
+                ovalRadiusY = OVAL_HEIGHT_DP / 2f,
+            ),
+        )
+    }
+
     Scaffold(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .navigationBarsPadding()
             .statusBarsPadding(),
@@ -116,20 +140,13 @@ fun FaceDetectionScreen(modifier: Modifier) {
             OvalOverlay(
                 modifier = Modifier.fillMaxSize(),
                 isFaceDetected = isFaceDetected,
-                onCenterCalculated = { ovalCenter = it }
+                onCenterCalculated = { center ->
+                    if (ovalCenter != center) {
+                        Log.d(FACE_CAPTURE_TAG, "Oval center calculated=$center")
+                        ovalCenter = center
+                    }
+                }
             )
-            ovalCenter?.let {
-                startFaceDetection(
-                    context = context,
-                    cameraController = cameraController,
-                    lifecycleOwner = lifecycleOwner,
-                    previewView = cameraPreviewView.value,
-                    onFaceDetected = { detected ->
-                        isFaceDetected = detected
-                    },
-                    it,
-                )
-            }
 
             if (isCameraShown) {
                 CapturePhotoButton(
@@ -138,11 +155,13 @@ fun FaceDetectionScreen(modifier: Modifier) {
                         .padding(bottom = 50.dp),
                     isFaceDetected = isFaceDetected,
                     onButtonClicked = {
+                        Log.d(FACE_CAPTURE_TAG, "Capture clicked. isFaceDetected=$isFaceDetected")
                         capturePhotoAndReplaceBackground(
                             context,
                             cameraController,
                             isFaceDetected
                         ) { capturedBitmap ->
+                            Log.d(FACE_CAPTURE_TAG, "Capture success. bitmap=${capturedBitmap.width}x${capturedBitmap.height}")
                             capturedPhoto = capturedBitmap.asImageBitmap()
                             if (isFaceDetected)
                                 isCameraShown = false
@@ -155,6 +174,7 @@ fun FaceDetectionScreen(modifier: Modifier) {
                         .align(Alignment.BottomCenter)
                         .padding(horizontal = 32.dp, vertical = 50.dp),
                     onSubmit = {
+                        Log.d(FACE_CAPTURE_TAG, "Submit clicked. capturedPhotoExists=${capturedPhoto != null}")
 
                         val mText = if (capturedPhoto == null) "Null" else "Is value exist"
 
@@ -184,6 +204,7 @@ private fun capturePhotoAndReplaceBackground(
             mainExecutor,
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
+                    Log.d(FACE_CAPTURE_TAG, "onCaptureSuccess rotation=${image.imageInfo.rotationDegrees}")
                     val capturedBitmap: Bitmap =
                         image.toBitmap().rotateBitmap(image.imageInfo.rotationDegrees)
 
@@ -195,6 +216,7 @@ private fun capturePhotoAndReplaceBackground(
                 }
 
                 override fun onError(exception: ImageCaptureException) {
+                    Log.e(FACE_CAPTURE_TAG, "onCaptureError: ${exception.message}", exception)
                 }
             },
         )
@@ -207,34 +229,6 @@ private fun processCapturedPhotoAndReplaceBackground(
 ) {
     onBackgroundReplaced(capturedBitmap)
 }
-
-private fun startFaceDetection(
-    context: Context,
-    cameraController: LifecycleCameraController,
-    lifecycleOwner: LifecycleOwner,
-    previewView: PreviewView,
-    onFaceDetected: (Boolean) -> Unit,
-    ovalRect: Offset,
-) {
-
-    cameraController.imageAnalysisTargetSize = CameraController.OutputSize(AspectRatio.RATIO_16_9)
-    cameraController.setImageAnalysisAnalyzer(
-        ContextCompat.getMainExecutor(context),
-        FaceDetector(
-            onFaceDetected = onFaceDetected,
-            ovalCenter = ovalRect,
-            ovalRadiusX = OVAL_WIDTH_DP / 2f,
-            ovalRadiusY = OVAL_HEIGHT_DP / 2f,
-        ),
-    )
-
-    cameraController.bindToLifecycle(lifecycleOwner)
-    previewView.controller = cameraController
-}
-
-
-
-
 
 @Preview(showBackground = true, showSystemUi = true,uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
