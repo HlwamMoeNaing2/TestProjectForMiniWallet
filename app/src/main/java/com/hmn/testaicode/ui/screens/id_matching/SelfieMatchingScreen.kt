@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -72,7 +73,7 @@ fun SelfieMatchingScreen(
         return
     }
 
-    val viewModel: SelfieMatchingViewModel = viewModel()
+    val viewModel: SelfieMatchingViewModel = hiltViewModel()
     val frontBitmap by viewModel.frontBitmap.collectAsStateWithLifecycle()
     val backBitmap by viewModel.backBitmap.collectAsStateWithLifecycle()
     val selfieBitmap by viewModel.selfieBitmap.collectAsStateWithLifecycle()

@@ -92,4 +92,5 @@ dependencies {
     "ksp"(libs.moshi.kotlin.codegen)
     "ksp"(libs.hilt.android.compiler)
     implementation(libs.play.services.mlkit.face.detection)
+    implementation(libs.hilt.navigation.compose)
 }
