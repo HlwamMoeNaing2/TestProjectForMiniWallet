@@ -62,6 +62,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.hmn.testaicode.R
+import com.hmn.testaicode.ui.screens.LifecycleLogger
 import com.hmn.testaicode.ui.screens.cash_in.CashInScreen
 import com.hmn.testaicode.ui.screens.face_capture.components.CameraView
 import com.hmn.testaicode.ui.screens.face_capture.components.CapturePhotoButton
@@ -78,6 +79,7 @@ private const val OVAL_HEIGHT_DP = 300
 @SuppressLint("RememberReturnType")
 @Composable
 fun FaceDetectionScreen(modifier: Modifier) {
+    LifecycleLogger("FaceDetectionScreen")
     val context: Context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
