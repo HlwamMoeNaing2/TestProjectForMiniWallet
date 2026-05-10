@@ -1,4 +1,4 @@
-package com.hmn.testaicode.ui.screens.face_capture
+package com.hmn.testaicode.ui.screens.selfie_capture
 
 /*
 

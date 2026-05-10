@@ -1,4 +1,4 @@
-package com.hmn.testaicode.ui.screens.face_capture.components
+package com.hmn.testaicode.ui.screens.selfie_capture.components
 
 import android.util.Log
 import androidx.compose.foundation.Canvas

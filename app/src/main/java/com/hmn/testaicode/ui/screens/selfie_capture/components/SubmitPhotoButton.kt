@@ -1,4 +1,4 @@
-package com.hmn.testaicode.ui.screens.face_capture.components
+package com.hmn.testaicode.ui.screens.selfie_capture.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
