@@ -86,13 +86,6 @@ fun IdUploadMiniCard(
                     border = BorderStroke(2.dp, SuccessGreen),
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
-                            Text(
-                                text = previewLabel,
-                                color = TextSecondary,
-                                fontSize = 11.sp,
-                            )
-                        }
                         val safeBitmap = previewBitmap?.takeIf { !it.isRecycled }
                         if (safeBitmap != null) {
                             Image(
@@ -108,7 +101,7 @@ fun IdUploadMiniCard(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(8.dp),
+                                    .padding(12.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
@@ -197,10 +190,9 @@ private fun SelfieMatchingScreenPreview() {
                 modifier = Modifier.fillMaxSize(),
                 title = "Test",
                 previewLabel = "Preview",
-                done = true
-            ){
-
-            }
+                done = true,
+                onCaptureClick = {},
+            )
         }
 
 
