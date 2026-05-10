@@ -103,7 +103,7 @@ fun SelfieMatchingScreen(
                     previewLabel = "Front ID Preview",
                     done = false,
                     onCaptureClick = {
-                        navController.navigate("screenB")
+                        navController.navigate("screenC")
                     },
 
                 )

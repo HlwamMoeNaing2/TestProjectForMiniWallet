@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hmn.testaicode.ui.screens.face_capture.FaceDetectionScreen
+import com.hmn.testaicode.ui.screens.id_capture.IDCaptureScreen
 import com.hmn.testaicode.ui.screens.id_matching.SelfieMatchingScreen
 
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
@@ -65,6 +66,9 @@ fun MyApp(modifier: Modifier) {
         }
         composable("screenB") {
             FaceDetectionScreen(modifier)
+        }
+        composable(("screenC")) {
+            IDCaptureScreen(modifier = modifier)
         }
     }
 }
