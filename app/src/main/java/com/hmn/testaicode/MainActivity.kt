@@ -13,6 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.hmn.testaicode.ui.screens.face_capture.FaceDetectionScreen
 import com.hmn.testaicode.ui.screens.id_matching.SelfieMatchingScreen
 
@@ -41,25 +44,27 @@ class MainActivity : ComponentActivity() {
 //                    EnterPhoneNumberScreen(
 //                        Modifier.padding(innerPadding)
 //                    )
-                    SelfieMatchingScreen ( Modifier.padding(innerPadding))
+                    MyApp ( Modifier.padding(innerPadding))
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    TestAICodeTheme {
-        Greeting("Android")
+fun MyApp(modifier: Modifier) {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "screenA"
+    ) {
+        composable("screenA") {
+            SelfieMatchingScreen(modifier = modifier, navController = navController)
+        }
+        composable("screenB") {
+            FaceDetectionScreen(modifier)
+        }
     }
 }

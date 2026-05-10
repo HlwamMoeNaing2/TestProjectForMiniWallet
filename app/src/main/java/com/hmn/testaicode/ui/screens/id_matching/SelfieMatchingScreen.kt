@@ -29,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hmn.testaicode.ui.screens.id_matching.components.IdUploadMiniCard
 import com.hmn.testaicode.ui.screens.id_matching.components.IdentityTopBar
 import com.hmn.testaicode.ui.screens.id_matching.components.SecurityNoticeCard
@@ -47,6 +49,7 @@ import com.hmn.testaicode.ui.theme.TestAICodeTheme
 @Composable
 fun SelfieMatchingScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     backIdComplete: Boolean = false,
     selfieStatus: SelfieMatchStatus = SelfieMatchStatus.Processing,
     validateEnabled: Boolean = false,
@@ -99,7 +102,10 @@ fun SelfieMatchingScreen(
                     title = "Front ID",
                     previewLabel = "Front ID Preview",
                     done = false,
-                    onCaptureClick = onFrontIdCapture,
+                    onCaptureClick = {
+                        navController.navigate("screenB")
+                    },
+
                 )
                 IdUploadMiniCard(
                     modifier = Modifier.weight(1f),
@@ -160,7 +166,8 @@ fun SelfieMatchingScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun SelfieMatchingScreenPreview() {
+    val navController = rememberNavController()
     TestAICodeTheme {
-        SelfieMatchingScreen()
+        SelfieMatchingScreen(navController = navController)
     }
 }
