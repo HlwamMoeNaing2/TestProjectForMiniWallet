@@ -1,6 +1,8 @@
 package com.hmn.testaicode.ui.screens.id_matching.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,8 +30,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.ui.screens.id_matching.constants.AccentYellow
@@ -37,6 +42,7 @@ import com.hmn.testaicode.ui.screens.id_matching.constants.ConnectorInactive
 import com.hmn.testaicode.ui.screens.id_matching.constants.SuccessGreen
 import com.hmn.testaicode.ui.screens.id_matching.constants.SurfaceCard
 import com.hmn.testaicode.ui.screens.id_matching.constants.TextSecondary
+import com.hmn.testaicode.ui.theme.TestAICodeTheme
 
 @Composable
 fun IdUploadMiniCard(
@@ -44,6 +50,7 @@ fun IdUploadMiniCard(
     title: String,
     previewLabel: String,
     done: Boolean,
+    previewBitmap: Bitmap? = null,
     onCaptureClick: () -> Unit,
 ) {
     Column(modifier = modifier) {
@@ -79,17 +86,37 @@ fun IdUploadMiniCard(
                     border = BorderStroke(2.dp, SuccessGreen),
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(12.dp),
-                        ) {
+                        Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
                             Text(
                                 text = previewLabel,
                                 color = TextSecondary,
                                 fontSize = 11.sp,
                             )
-                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                        val safeBitmap = previewBitmap?.takeIf { !it.isRecycled }
+                        if (safeBitmap != null) {
+                            Image(
+                                bitmap = safeBitmap.asImageBitmap(),
+                                contentDescription = "ID Preview",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .padding(8.dp),
+                                contentScale = ContentScale.Crop,
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = previewLabel,
+                                    color = TextSecondary,
+                                    fontSize = 12.sp,
+                                )
+                            }
                         }
                         Surface(
                             onClick = onCaptureClick,
@@ -157,5 +184,25 @@ fun IdUploadMiniCard(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun SelfieMatchingScreenPreview() {
+    TestAICodeTheme {
+
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            IdUploadMiniCard(
+                modifier = Modifier.fillMaxSize(),
+                title = "Test",
+                previewLabel = "Preview",
+                done = true
+            ){
+
+            }
+        }
+
+
     }
 }

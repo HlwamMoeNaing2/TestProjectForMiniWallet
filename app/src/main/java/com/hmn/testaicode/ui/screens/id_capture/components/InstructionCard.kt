@@ -34,11 +34,6 @@ import androidx.compose.ui.unit.dp
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "◻",
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(
                 text = "အမည်ကတ်ကိုကတ်ပြင် အတွင်း အောင်အောင်မြင်မြင် ထည့်ပေးပါ။",
                 color = Color.White,
                 textAlign = TextAlign.Center,

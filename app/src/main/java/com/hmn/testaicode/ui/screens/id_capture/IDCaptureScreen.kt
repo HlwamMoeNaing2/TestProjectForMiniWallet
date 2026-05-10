@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -75,6 +76,11 @@ fun IDCaptureScreen(
     onHelp: () -> Unit = {},
     onSubmitSuccess: (String) -> Unit = {},
 ) {
+    if (LocalInspectionMode.current) {
+        IDCapturePreviewContent(modifier = modifier)
+        return
+    }
+
     val tag = "IDCaptureScreen"
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -228,7 +234,7 @@ fun IDCaptureScreen(
                                     factory = { previewView },
                                     update = {
                                         if (it.controller == null) {
-                                            previewUseCase.setSurfaceProvider(it.surfaceProvider)
+                                            previewUseCase.surfaceProvider = it.surfaceProvider
                                         }
                                     },
                                 )
@@ -357,6 +363,57 @@ private fun Context.hasCameraPermission(): Boolean {
 @Composable
 private fun IDCaptureScreenPreview() {
     TestAICodeTheme {
-        IDCaptureScreen()
+        IDCapturePreviewContent()
+    }
+}
+
+@Composable
+private fun IDCapturePreviewContent(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            HeaderRow(
+                title = "မှတ်ပုံတင်ကတ် အရှေ့ဘက်",
+                onClose = {},
+                onHelp = {},
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.88f)
+                            .widthIn(max = 420.dp)
+                            .aspectRatio(1.58f)
+                            .clip(RoundedCornerShape(22.dp))
+                            .background(Color(0xFF1E1E1E)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "Camera Preview (Design Preview)",
+                            color = Color.White.copy(alpha = 0.85f),
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    InstructionCard()
+                }
+            }
+        }
     }
 }

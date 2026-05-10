@@ -66,6 +66,7 @@ fun SelfieMatchingScreen(
             .background(ScreenBg)
             .windowInsetsPadding(WindowInsets.systemBars),
     ) {
+        Spacer(Modifier.height(16.dp))
         IdentityTopBar(
             onBack = onBack,
             onHelp = onHelp,
@@ -111,7 +112,7 @@ fun SelfieMatchingScreen(
                     modifier = Modifier.weight(1f),
                     title = "Back ID",
                     previewLabel = "Back ID Preview",
-                    done = backIdComplete,
+                    done = true,
                     onCaptureClick = onBackIdCapture,
                 )
             }

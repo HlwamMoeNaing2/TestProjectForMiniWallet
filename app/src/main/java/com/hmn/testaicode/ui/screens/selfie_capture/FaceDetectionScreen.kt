@@ -35,6 +35,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -56,6 +57,11 @@ private const val FACE_CAPTURE_TAG = "FaceDetectionScreen"
 @SuppressLint("RememberReturnType")
 @Composable
 fun FaceDetectionScreen(modifier: Modifier = Modifier) {
+    if (LocalInspectionMode.current) {
+        FaceDetectionPreviewContent(modifier)
+        return
+    }
+
     LifecycleLogger("FaceDetectionScreen")
     val context: Context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -187,6 +193,19 @@ fun FaceDetectionScreen(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+private fun FaceDetectionPreviewContent(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        OvalOverlay(
+            modifier = Modifier.fillMaxSize(),
+            isFaceDetected = false,
+        )
+    }
+}
+
 
 private fun capturePhotoAndReplaceBackground(
     context: Context,
@@ -230,7 +249,7 @@ private fun processCapturedPhotoAndReplaceBackground(
 @Composable
 private fun FaceDetectionScreenPreview() {
     TestAICodeTheme {
-        FaceDetectionScreen(Modifier.fillMaxSize())
+        FaceDetectionPreviewContent(Modifier.fillMaxSize())
     }
 }
 
