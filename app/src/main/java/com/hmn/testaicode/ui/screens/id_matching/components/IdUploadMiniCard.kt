@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.Replay
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -122,7 +123,7 @@ fun IdUploadMiniCard(
                         ) {
                             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                 Icon(
-                                    imageVector = Icons.Outlined.CameraAlt,
+                                    imageVector = Icons.Outlined.Replay,
                                     contentDescription = "Retake",
                                     tint = Color.White,
                                     modifier = Modifier.size(18.dp),
