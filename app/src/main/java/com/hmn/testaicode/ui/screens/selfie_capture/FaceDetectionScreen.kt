@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.hmn.testaicode.ui.screens.LifecycleLogger
+import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.selfie_capture.components.CameraView
 import com.hmn.testaicode.ui.screens.selfie_capture.components.CapturePhotoButton
 import com.hmn.testaicode.ui.screens.selfie_capture.components.CapturedPhotoView
@@ -56,7 +57,7 @@ private const val FACE_CAPTURE_TAG = "FaceDetectionScreen"
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun FaceDetectionScreen(modifier: Modifier = Modifier) {
+fun FaceDetectionScreen(modifier: Modifier = Modifier, imageType: ImageType) {
     if (LocalInspectionMode.current) {
         FaceDetectionPreviewContent(modifier)
         return

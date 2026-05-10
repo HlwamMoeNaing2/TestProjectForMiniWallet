@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hmn.testaicode.navigation.Routes
+import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.id_matching.components.IdUploadMiniCard
 import com.hmn.testaicode.ui.screens.id_matching.components.IdentityTopBar
 import com.hmn.testaicode.ui.screens.id_matching.components.SecurityNoticeCard
@@ -104,7 +106,7 @@ fun SelfieMatchingScreen(
                     previewLabel = "Front ID Preview",
                     done = false,
                     onCaptureClick = {
-                        navController.navigate("screenC")
+                        navController.navigate(Routes.iDCaptureScreen(ImageType.FRONT))
                     },
 
                 )
@@ -113,7 +115,9 @@ fun SelfieMatchingScreen(
                     title = "Back ID",
                     previewLabel = "Back ID Preview",
                     done = true,
-                    onCaptureClick = onBackIdCapture,
+                    onCaptureClick = {
+                        navController.navigate(Routes.iDCaptureScreen(ImageType.BACK))
+                    },
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -130,7 +134,9 @@ fun SelfieMatchingScreen(
                         title = "Selfie Photo",
                         previewLabel = "Selfie Preview",
                         done = selfieStatus == SelfieMatchStatus.Done,
-                        onCaptureClick = onSelfieCapture,
+                        onCaptureClick = {
+                            navController.navigate(Routes.faceDetectionScreen(ImageType.SELFIE))
+                        },
                     )
                 }
             }

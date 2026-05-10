@@ -11,9 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.hmn.testaicode.navigation.Routes
+import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.selfie_capture.FaceDetectionScreen
 import com.hmn.testaicode.ui.screens.id_capture.IDCaptureScreen
 import com.hmn.testaicode.ui.screens.id_matching.SelfieMatchingScreen
@@ -57,16 +61,50 @@ fun MyApp(modifier: Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = "screenA"
+        startDestination = Routes.ID_SELFIE_MATCHING_SCREEN
     ) {
-        composable("screenA") {
+        composable(Routes.ID_SELFIE_MATCHING_SCREEN) {
             SelfieMatchingScreen(modifier = modifier, navController = navController)
         }
-        composable("screenB") {
-            FaceDetectionScreen(modifier)
+        composable(
+            route = "${Routes.FACE_DETECTION_SCREEN}/{imageType}",
+            arguments = listOf(
+                navArgument("imageType") { type = NavType.StringType }
+            )
+
+        ) {backStackEntry ->
+            val imageType = runCatching {
+                ImageType.valueOf(
+                    backStackEntry.arguments?.getString("imageType") ?: ""
+                )
+            }.getOrDefault(ImageType.SELFIE)
+
+            FaceDetectionScreen(
+                modifier = modifier,
+                imageType = imageType
+            )
         }
-        composable(("screenC")) {
-            IDCaptureScreen(modifier = modifier)
+
+
+
+
+        composable(
+            route = "${Routes.ID_CAPTURING_SCREEN}/{imageType}",
+            arguments = listOf(
+                navArgument("imageType") { type = NavType.StringType }
+            )
+
+        ) {backStackEntry ->
+            val imageType = runCatching {
+                ImageType.valueOf(
+                    backStackEntry.arguments?.getString("imageType") ?: ""
+                )
+            }.getOrDefault(ImageType.SELFIE)
+
+            IDCaptureScreen(
+                modifier = modifier,
+                imageType = imageType
+            )
         }
     }
 }

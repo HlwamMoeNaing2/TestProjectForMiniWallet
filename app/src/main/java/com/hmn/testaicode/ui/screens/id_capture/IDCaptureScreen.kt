@@ -58,6 +58,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.id_capture.components.BottomActionSection
 import com.hmn.testaicode.ui.screens.id_capture.components.HeaderRow
 import com.hmn.testaicode.ui.screens.id_capture.components.InstructionCard
@@ -72,10 +73,16 @@ import kotlin.coroutines.resumeWithException
 @Composable
 fun IDCaptureScreen(
     modifier: Modifier = Modifier,
+    imageType: ImageType,
     onClose: () -> Unit = {},
     onHelp: () -> Unit = {},
     onSubmitSuccess: (String) -> Unit = {},
 ) {
+
+
+
+
+
     if (LocalInspectionMode.current) {
         IDCapturePreviewContent(modifier = modifier)
         return
@@ -295,9 +302,7 @@ fun IDCaptureScreen(
                         )
                     },
                     onSubmit = {
-                        viewModel.submitCaptured { path ->
-                            onSubmitSuccess(path)
-                        }
+                        viewModel.submitCaptured(onSubmitSuccess = {}, imageType =imageType )
                     },
                     onRetake = { viewModel.retake() },
                 )

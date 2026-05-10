@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.hmn.testaicode.ui.screens.global_constants.ImageType
+import com.hmn.testaicode.ui.screens.global_constants.toFolderName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -79,7 +81,7 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun submitCaptured(onSubmitSuccess: (String) -> Unit = {}) {
+    fun submitCaptured(onSubmitSuccess: (String) -> Unit = {},imageType: ImageType) {
         val bitmap = _uiState.value.capturedBitmap
         if (bitmap == null) {
             onCaptureError("No captured image to submit")
@@ -89,7 +91,7 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true, errorMessage = null) }
             runCatching {
-                saveBitmapToAppStorage(bitmap)
+                saveBitmapToAppStorage(bitmap,imageType)
             }.onSuccess { path ->
                 Log.d(TAG, "Image saved: $path")
                 _uiState.update { it.copy(isSubmitting = false, savedFilePath = path) }
@@ -106,7 +108,7 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    private suspend fun saveBitmapToAppStorage(bitmap: Bitmap): String = withContext(Dispatchers.IO) {
+    private suspend fun saveBitmapToAppStorage(bitmap: Bitmap,imageType: ImageType): String = withContext(Dispatchers.IO) {
         val context = getApplication<Application>()
         val parent = File(context.filesDir, "id_capture")
         if (!parent.exists()) {
@@ -114,7 +116,7 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         }
 
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val file = File(parent, "id_front_$timestamp.jpg")
+        val file = File(parent, "${imageType.toFolderName()}.jpg")
         FileOutputStream(file).use { stream ->
             val ok = bitmap.compress(Bitmap.CompressFormat.JPEG, 92, stream)
             check(ok) { "Bitmap compression failed" }
