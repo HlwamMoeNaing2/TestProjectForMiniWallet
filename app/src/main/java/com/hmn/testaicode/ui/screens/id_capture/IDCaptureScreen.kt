@@ -3,6 +3,7 @@ package com.hmn.testaicode.ui.screens.id_capture
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.Surface
@@ -36,10 +37,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.FlashOff
 import androidx.compose.material.icons.outlined.FlashOn
-import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -66,18 +65,20 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hmn.testaicode.ui.screens.cash_in.CashInScreen
+import com.hmn.testaicode.ui.screens.id_capture.components.BottomActionSection
+import com.hmn.testaicode.ui.screens.id_capture.components.HeaderRow
+import com.hmn.testaicode.ui.screens.id_capture.components.InstructionCard
 import com.hmn.testaicode.ui.screens.utils.BitmapUtils
+import com.hmn.testaicode.ui.screens.utils.cropBitmapToPreviewRect
+import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -324,195 +325,6 @@ fun IDCaptureScreen(
 }
 
 @Composable
-private fun HeaderRow(
-    title: String,
-    onClose: () -> Unit,
-    onHelp: () -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        IconButton(
-            onClick = onClose,
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color.Black.copy(alpha = 0.35f)),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Close,
-                contentDescription = "Close",
-                tint = Color.White,
-            )
-        }
-        Text(
-            text = title,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(horizontal = 52.dp),
-            color = Color.White,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center,
-        )
-        IconButton(
-            onClick = onHelp,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color.Black.copy(alpha = 0.35f)),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.HelpOutline,
-                contentDescription = "Help",
-                tint = Color.White,
-            )
-        }
-    }
-}
-
-@Composable
-private fun InstructionCard() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(0.88f)
-            .widthIn(max = 420.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color(0xFF2A2C30))
-            .padding(horizontal = 20.dp, vertical = 18.dp),
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = "◻",
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(
-                text = "အမည်ကတ်ကိုကတ်ပြင် အတွင်း အောင်အောင်မြင်မြင် ထည့်ပေးပါ။",
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-    }
-}
-
-@Composable
-private fun BottomActionSection(
-    flashEnabled: Boolean,
-    isBusy: Boolean,
-    hasCapturedBitmap: Boolean,
-    onToggleFlash: () -> Unit,
-    onCapture: () -> Unit,
-    onSubmit: () -> Unit,
-    onRetake: () -> Unit,
-) {
-    if (!hasCapturedBitmap) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 16.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(
-                onClick = onToggleFlash,
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF232529)),
-            ) {
-                Icon(
-                    imageVector = if (flashEnabled) Icons.Outlined.FlashOn else Icons.Outlined.FlashOff,
-                    contentDescription = "Toggle flash",
-                    tint = Color.White,
-                )
-            }
-
-            Spacer(modifier = Modifier.size(28.dp))
-
-            Box(
-                modifier = Modifier
-                    .size(84.dp)
-                    .clip(CircleShape)
-                    .background(Color.White)
-                    .padding(6.dp)
-                    .clickable(enabled = !isBusy, onClick = onCapture),
-                contentAlignment = Alignment.Center,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                        .background(Color.Black),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (isBusy) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(28.dp),
-                            strokeWidth = 3.dp,
-                            color = Color.White,
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.PhotoCamera,
-                            contentDescription = "Capture",
-                            tint = Color.White,
-                        )
-                    }
-                }
-            }
-        }
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Button(
-                onClick = onSubmit,
-                enabled = !isBusy,
-                modifier = Modifier
-                    .fillMaxWidth(0.88f)
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF5E62FF),
-                    contentColor = Color.White,
-                ),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-            ) {
-                if (isBusy) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp,
-                        color = Color.White,
-                    )
-                } else {
-                    Text(text = "Submit", style = MaterialTheme.typography.titleMedium)
-                }
-            }
-            Text(
-                text = "Retake",
-                color = Color.White.copy(alpha = 0.9f),
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clickable(enabled = !isBusy, onClick = onRetake)
-                    .padding(6.dp),
-            )
-        }
-    }
-}
-
-@Composable
 private fun PermissionStateContent(onRequestPermission: () -> Unit) {
     Column(
         modifier = Modifier
@@ -547,60 +359,21 @@ private suspend fun Context.awaitCameraProvider(): ProcessCameraProvider =
         )
     }
 
-/**
- * Crops the upright captured bitmap to match the on-screen preview rectangle's aspect ratio.
- *
- * This removes hidden camera regions introduced by center-crop scaling and keeps only what
- * users visually saw in the rounded preview area.
- */
-private fun cropBitmapToPreviewRect(
-    sourceBitmap: Bitmap,
-    previewWidth: Int,
-    previewHeight: Int,
-): Bitmap {
-    if (sourceBitmap.width <= 1 || sourceBitmap.height <= 1) return sourceBitmap
-    if (previewWidth <= 1 || previewHeight <= 1) return sourceBitmap
 
-    val sourceRatio = sourceBitmap.width.toFloat() / sourceBitmap.height.toFloat()
-    val previewRatio = previewWidth.toFloat() / previewHeight.toFloat()
-
-    if (abs(sourceRatio - previewRatio) < 0.0001f) return sourceBitmap
-
-    val cropWidth: Int
-    val cropHeight: Int
-    val offsetX: Int
-    val offsetY: Int
-
-    if (sourceRatio > previewRatio) {
-        // Source is wider than preview => crop left/right.
-        cropHeight = sourceBitmap.height
-        cropWidth = (cropHeight * previewRatio).toInt().coerceIn(1, sourceBitmap.width)
-        offsetX = ((sourceBitmap.width - cropWidth) / 2).coerceAtLeast(0)
-        offsetY = 0
-    } else {
-        // Source is taller than preview => crop top/bottom.
-        cropWidth = sourceBitmap.width
-        cropHeight = (cropWidth / previewRatio).toInt().coerceIn(1, sourceBitmap.height)
-        offsetX = 0
-        offsetY = ((sourceBitmap.height - cropHeight) / 2).coerceAtLeast(0)
-    }
-
-    return try {
-        Bitmap.createBitmap(
-            sourceBitmap,
-            offsetX,
-            offsetY,
-            cropWidth,
-            cropHeight,
-        )
-    } catch (_: Throwable) {
-        sourceBitmap
-    }
-}
 
 private fun Context.hasCameraPermission(): Boolean {
     return ContextCompat.checkSelfPermission(
         this,
         Manifest.permission.CAMERA,
     ) == PackageManager.PERMISSION_GRANTED
+}
+
+
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true, showSystemUi = true,uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun IDCaptureScreenPreview() {
+    TestAICodeTheme {
+        IDCaptureScreen()
+    }
 }
