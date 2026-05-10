@@ -302,7 +302,7 @@ fun IDCaptureScreen(
                         )
                     },
                     onSubmit = {
-                        viewModel.submitCaptured(onSubmitSuccess = {}, imageType =imageType )
+                        viewModel.submitCaptured(imageType = imageType, onSubmitSuccess = onSubmitSuccess)
                     },
                     onRetake = { viewModel.retake() },
                 )

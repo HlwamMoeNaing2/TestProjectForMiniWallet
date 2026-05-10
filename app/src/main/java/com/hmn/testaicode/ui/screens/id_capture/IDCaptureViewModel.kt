@@ -16,9 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 private const val TAG = "IDCaptureViewModel"
 
@@ -81,7 +78,7 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun submitCaptured(onSubmitSuccess: (String) -> Unit = {},imageType: ImageType) {
+    fun submitCaptured(imageType: ImageType, onSubmitSuccess: (String) -> Unit = {}) {
         val bitmap = _uiState.value.capturedBitmap
         if (bitmap == null) {
             onCaptureError("No captured image to submit")
@@ -91,7 +88,7 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true, errorMessage = null) }
             runCatching {
-                saveBitmapToAppStorage(bitmap,imageType)
+                saveBitmapToAppStorage(bitmap, imageType)
             }.onSuccess { path ->
                 Log.d(TAG, "Image saved: $path")
                 _uiState.update { it.copy(isSubmitting = false, savedFilePath = path) }
@@ -108,23 +105,40 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    private suspend fun saveBitmapToAppStorage(bitmap: Bitmap,imageType: ImageType): String = withContext(Dispatchers.IO) {
-        val context = getApplication<Application>()
-        val parent = File(context.filesDir, "id_capture")
-        if (!parent.exists()) {
-            check(parent.mkdirs()) { "Unable to create folder: ${parent.absolutePath}" }
-        }
+    /**
+     * Writes exactly one file per [ImageType] under `files/id_capture/`:
+     * - `com_hmn_selfie_.jpg`
+     * - `com_hmn_front.jpg`
+     * - `com_hmn_back.jpg`
+     *
+     * Re-saving the same type deletes the previous file first so there are never duplicates.
+     */
+    private suspend fun saveBitmapToAppStorage(bitmap: Bitmap, imageType: ImageType): String =
+        withContext(Dispatchers.IO) {
+            val context = getApplication<Application>()
+            val parent = File(context.filesDir, "id_capture")
+            if (!parent.exists()) {
+                check(parent.mkdirs()) { "Unable to create folder: ${parent.absolutePath}" }
+            }
 
-        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val file = File(parent, "${imageType.toFolderName()}.jpg")
-        FileOutputStream(file).use { stream ->
-            val ok = bitmap.compress(Bitmap.CompressFormat.JPEG, 92, stream)
-            check(ok) { "Bitmap compression failed" }
-            stream.flush()
-            runCatching { stream.fd.sync() }
+            val baseName = imageType.toFolderName()
+            val file = File(parent, "$baseName.jpg")
+
+            if (file.exists()) {
+                check(file.delete()) {
+                    "Unable to delete existing file for replace: ${file.absolutePath}"
+                }
+            }
+
+            FileOutputStream(file).use { stream ->
+                val ok = bitmap.compress(Bitmap.CompressFormat.JPEG, 92, stream)
+                check(ok) { "Bitmap compression failed" }
+                stream.flush()
+                runCatching { stream.fd.sync() }
+            }
+
+            file.absolutePath
         }
-        file.absolutePath
-    }
 
     override fun onCleared() {
         super.onCleared()
