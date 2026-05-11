@@ -201,8 +201,9 @@ fun IDCaptureScreen(
                     .padding(horizontal = 20.dp, vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Spacer(Modifier.height(16.dp))
                 HeaderRow(
-                    title = "မှတ်ပုံတင်ကတ် အရှေ့ဘက်",
+                    title = "Back",
                     onClose = onClose,
                     onHelp = onHelp,
                 )

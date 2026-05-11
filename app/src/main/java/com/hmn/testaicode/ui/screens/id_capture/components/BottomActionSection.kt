@@ -52,6 +52,7 @@ fun BottomActionSection(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+/*
             IconButton(
                 onClick = onToggleFlash,
                 modifier = Modifier
@@ -67,6 +68,7 @@ fun BottomActionSection(
             }
 
             Spacer(modifier = Modifier.size(28.dp))
+ */
 
             Box(
                 modifier = Modifier

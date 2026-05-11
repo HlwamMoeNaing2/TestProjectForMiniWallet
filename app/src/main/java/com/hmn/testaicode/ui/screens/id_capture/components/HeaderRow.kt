@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
     onHelp: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
     ) {
         IconButton(
             onClick = onClose,
