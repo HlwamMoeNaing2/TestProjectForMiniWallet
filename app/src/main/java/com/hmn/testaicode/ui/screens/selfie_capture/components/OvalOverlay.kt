@@ -3,6 +3,7 @@ package com.hmn.testaicode.ui.screens.selfie_capture.components
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,7 +16,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -36,7 +36,9 @@ private const val TAG = "OvalOverlay"
     isFaceDetected: Boolean,
     onCenterCalculated: (Offset) -> Unit = {},
 ) {
-    val ovalColor = if (isFaceDetected) Color.Green else Color.Red
+    val scheme = MaterialTheme.colorScheme
+    val ovalColor = if (isFaceDetected) scheme.tertiary else scheme.error
+    val scrimColor = scheme.scrim.copy(alpha = 0.92f)
     val density = LocalDensity.current
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
     val ovalCenterOffset = remember(canvasSize, density) {
@@ -81,7 +83,7 @@ private const val TAG = "OvalOverlay"
                 addOval(ovalRect)
             }
             clipPath(ovalPath, clipOp = ClipOp.Difference) {
-                drawRect(SolidColor(Color.Black.copy(alpha = 0.95f)))
+                drawRect(SolidColor(scrimColor))
             }
         }
 

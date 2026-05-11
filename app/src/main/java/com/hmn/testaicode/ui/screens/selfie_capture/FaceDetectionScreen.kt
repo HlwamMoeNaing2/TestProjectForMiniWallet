@@ -15,13 +15,14 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
@@ -48,6 +49,7 @@ import com.hmn.testaicode.ui.screens.selfie_capture.components.CapturedPhotoView
 import com.hmn.testaicode.ui.screens.selfie_capture.components.OvalOverlay
 import com.hmn.testaicode.ui.screens.selfie_capture.components.SubmitPhotoButton
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 import java.util.concurrent.Executor
 
 private const val OVAL_WIDTH_DP = 250
@@ -125,15 +127,15 @@ fun FaceDetectionScreen(modifier: Modifier = Modifier, imageType: ImageType) {
         )
     }
 
-    Scaffold(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .navigationBarsPadding()
-            .statusBarsPadding(),
-    ) { paddingValues: PaddingValues ->
+            .background(appBackgroundBrush())
+            .windowInsetsPadding(WindowInsets.systemBars),
+    ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             if (isCameraShown) {
-                CameraView(paddingValues, cameraPreviewView)
+                CameraView(PaddingValues(), cameraPreviewView)
             } else {
                 capturedPhoto?.let { photo ->
                     CapturedPhotoView(photo)
@@ -190,14 +192,15 @@ fun FaceDetectionScreen(modifier: Modifier = Modifier, imageType: ImageType) {
                 )
             }
         }
-
     }
 }
 
 @Composable
 private fun FaceDetectionPreviewContent(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(appBackgroundBrush()),
         contentAlignment = Alignment.Center,
     ) {
         OvalOverlay(

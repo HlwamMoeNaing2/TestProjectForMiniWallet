@@ -24,14 +24,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -44,6 +42,7 @@ fun BottomActionSection(
     onSubmit: () -> Unit,
     onRetake: () -> Unit,
 ) {
+    val scheme = MaterialTheme.colorScheme
     if (!hasCapturedBitmap) {
         Row(
             modifier = Modifier
@@ -74,7 +73,7 @@ fun BottomActionSection(
                 modifier = Modifier
                     .size(84.dp)
                     .clip(CircleShape)
-                    .background(Color.White)
+                    .background(scheme.surface)
                     .padding(6.dp)
                     .clickable(enabled = !isBusy, onClick = onCapture),
                 contentAlignment = Alignment.Center,
@@ -83,20 +82,20 @@ fun BottomActionSection(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
-                        .background(Color.Black),
+                        .background(scheme.inverseSurface),
                     contentAlignment = Alignment.Center,
                 ) {
                     if (isBusy) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(28.dp),
                             strokeWidth = 3.dp,
-                            color = Color.White,
+                            color = scheme.inverseOnSurface,
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.PhotoCamera,
                             contentDescription = "Capture",
-                            tint = Color.White,
+                            tint = scheme.inverseOnSurface,
                         )
                     }
                 }
@@ -118,8 +117,8 @@ fun BottomActionSection(
                     .height(52.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF5E62FF),
-                    contentColor = Color.White,
+                    containerColor = scheme.primary,
+                    contentColor = scheme.onPrimary,
                 ),
                 contentPadding = PaddingValues(horizontal = 16.dp),
             ) {
@@ -127,7 +126,7 @@ fun BottomActionSection(
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
                         strokeWidth = 2.dp,
-                        color = Color.White,
+                        color = scheme.onPrimary,
                     )
                 } else {
                     Text(text = "Submit", style = MaterialTheme.typography.titleMedium)
@@ -135,7 +134,7 @@ fun BottomActionSection(
             }
             Text(
                 text = "Retake",
-                color = Color.White.copy(alpha = 0.9f),
+                color = scheme.primary,
                 modifier = Modifier
                     .wrapContentSize()
                     .clickable(enabled = !isBusy, onClick = onRetake)
