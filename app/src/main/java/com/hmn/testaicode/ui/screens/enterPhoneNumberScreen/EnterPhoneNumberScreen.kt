@@ -47,7 +47,7 @@ import com.hmn.testaicode.extension.isValidPhone
 @Composable
 fun EnterPhoneNumberScreen(
     modifier: Modifier = Modifier,
-    onContinue: () -> Unit = {},
+    onContinue: (String) -> Unit = {},
     /*countryViewModel: CountryViewModel = viewModel(),*/
 ) {
 
@@ -128,7 +128,7 @@ fun EnterPhoneNumberScreen(
                         enabled = phoneNumber.isValidPhone(),
                         onClick = {
                             Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                            onContinue()
+                            onContinue(phoneNumber)
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))

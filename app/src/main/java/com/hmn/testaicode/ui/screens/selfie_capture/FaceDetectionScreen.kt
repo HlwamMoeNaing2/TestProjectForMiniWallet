@@ -59,7 +59,11 @@ private const val FACE_CAPTURE_TAG = "FaceDetectionScreen"
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun FaceDetectionScreen(modifier: Modifier = Modifier, imageType: ImageType) {
+fun FaceDetectionScreen(
+    modifier: Modifier = Modifier,
+    imageType: ImageType,
+    onSubmitSuccess: (String) -> Unit = {},
+) {
     if (LocalInspectionMode.current) {
         FaceDetectionPreviewContent(modifier)
         return
@@ -188,6 +192,10 @@ fun FaceDetectionScreen(modifier: Modifier = Modifier, imageType: ImageType) {
                             mText,
                             Toast.LENGTH_SHORT,
                         ).show()
+
+                        if (capturedPhoto != null) {
+                            onSubmitSuccess(imageType.name)
+                        }
                     },
                 )
             }
