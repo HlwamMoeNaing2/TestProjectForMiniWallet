@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,10 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hmn.testaicode.ui.screens.id_matching.constants.AccentYellow
-import com.hmn.testaicode.ui.screens.id_matching.constants.BadgeMutedBg
 import com.hmn.testaicode.ui.screens.id_matching.constants.SuccessGreen
-import com.hmn.testaicode.ui.screens.id_matching.constants.TextSecondary
 
 @Composable
 fun StatusPill(
@@ -28,12 +26,14 @@ fun StatusPill(
     done: Boolean,
     showSpinner: Boolean = false,
 ) {
+    val scheme = MaterialTheme.colorScheme
+    val accent = scheme.tertiary
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = when {
-            showSpinner -> AccentYellow.copy(alpha = 0.22f)
+            showSpinner -> accent.copy(alpha = 0.22f)
             done -> SuccessGreen.copy(alpha = 0.22f)
-            else -> BadgeMutedBg
+            else -> scheme.surfaceVariant.copy(alpha = 0.65f)
         },
     ) {
         Row(
@@ -45,7 +45,7 @@ fun StatusPill(
                 CircularProgressIndicator(
                     modifier = Modifier.size(12.dp),
                     strokeWidth = 2.dp,
-                    color = AccentYellow,
+                    color = accent,
                 )
             } else if (done) {
                 Icon(
@@ -58,9 +58,9 @@ fun StatusPill(
             Text(
                 text = text,
                 color = when {
-                    showSpinner -> AccentYellow
+                    showSpinner -> accent
                     done -> SuccessGreen
-                    else -> TextSecondary
+                    else -> scheme.onSurfaceVariant
                 },
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,

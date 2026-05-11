@@ -19,15 +19,14 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -44,11 +42,9 @@ import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.id_matching.components.IdUploadMiniCard
 import com.hmn.testaicode.ui.screens.id_matching.components.IdentityTopBar
 import com.hmn.testaicode.ui.screens.id_matching.components.SecurityNoticeCard
-import com.hmn.testaicode.ui.screens.id_matching.constants.AccentYellow
-import com.hmn.testaicode.ui.screens.id_matching.constants.DisabledButtonBg
-import com.hmn.testaicode.ui.screens.id_matching.constants.ScreenBg
-import com.hmn.testaicode.ui.screens.id_matching.constants.TextSecondary
+import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 
 @Composable
 fun SelfieMatchingScreen(
@@ -111,40 +107,50 @@ private fun SelfieMatchingScreenContent(
     onHelp: () -> Unit,
     onValidateIdentity: () -> Unit,
 ) {
+    val scheme = MaterialTheme.colorScheme
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(ScreenBg)
+            .background(appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars),
     ) {
         Spacer(Modifier.height(16.dp))
         IdentityTopBar(
+            modifier = Modifier.padding(horizontal = 18.dp),
             onBack = onBack,
             onHelp = onHelp,
         )
-        Column(
+        Spacer(Modifier.height(8.dp))
+        Surface(
             modifier = Modifier
                 .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 16.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp),
+            shape = RoundedCornerShape(28.dp),
+            color = scheme.surface.copy(alpha = 0.98f),
+            shadowElevation = 6.dp,
+            tonalElevation = 0.dp,
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 22.dp, vertical = 22.dp),
+            ) {
             Text(
                 text = "Upload Documents",
-                color = Color.White,
+                color = scheme.onSurface,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "Please provide clear photos of your ID document and a selfie to complete the verification process.",
-                color = TextSecondary,
+                color = scheme.onSurface.copy(alpha = 0.72f),
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
             )
             Spacer(modifier = Modifier.height(24.dp))
-
-            Spacer(modifier = Modifier.height(28.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -194,27 +200,19 @@ private fun SelfieMatchingScreenContent(
 
             Spacer(modifier = Modifier.height(20.dp))
             SecurityNoticeCard()
+            Spacer(modifier = Modifier.height(8.dp))
+            }
         }
-        Button(
-            onClick = onValidateIdentity,
-            enabled = validateEnabled,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 20.dp)
-                .height(54.dp),
-            shape = RoundedCornerShape(27.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (validateEnabled) AccentYellow else DisabledButtonBg,
-                disabledContainerColor = DisabledButtonBg,
-                contentColor = Color.White,
-                disabledContentColor = Color.White.copy(alpha = 0.65f),
-            ),
+                .padding(horizontal = 18.dp)
+                .padding(top = 12.dp, bottom = 20.dp),
         ) {
-            Text(
+            GradientContinueButton(
                 text = "Validate Identity",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                enabled = validateEnabled,
+                onClick = onValidateIdentity,
             )
         }
     }

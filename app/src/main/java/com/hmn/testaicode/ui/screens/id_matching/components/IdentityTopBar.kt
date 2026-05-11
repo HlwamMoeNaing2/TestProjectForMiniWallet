@@ -12,27 +12,25 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hmn.testaicode.ui.screens.id_matching.constants.SurfaceCard
-import com.hmn.testaicode.ui.screens.id_matching.constants.TextSecondary
-
-
 @Composable
- fun IdentityTopBar(
+fun IdentityTopBar(
+    modifier: Modifier = Modifier,
     onBack: () -> Unit,
     onHelp: () -> Unit,
 ) {
+    val scheme = MaterialTheme.colorScheme
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -41,13 +39,13 @@ import com.hmn.testaicode.ui.screens.id_matching.constants.TextSecondary
             Icon(
                 imageVector = Icons.Outlined.ArrowBack,
                 contentDescription = "Back",
-                tint = Color.White,
+                tint = scheme.onSurface,
             )
         }
         Text(
             text = "Identity Verification",
             modifier = Modifier.weight(1f),
-            color = Color.White,
+            color = scheme.onSurface,
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
@@ -56,13 +54,13 @@ import com.hmn.testaicode.ui.screens.id_matching.constants.TextSecondary
             Surface(
                 modifier = Modifier.size(36.dp),
                 shape = CircleShape,
-                color = SurfaceCard,
+                color = scheme.surfaceVariant.copy(alpha = 0.55f),
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                     Icon(
                         imageVector = Icons.Outlined.HelpOutline,
                         contentDescription = "Help",
-                        tint = TextSecondary,
+                        tint = scheme.onSurface.copy(alpha = 0.65f),
                         modifier = Modifier.size(20.dp),
                     )
                 }

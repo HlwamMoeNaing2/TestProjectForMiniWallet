@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Replay
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -38,11 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hmn.testaicode.ui.screens.id_matching.constants.AccentYellow
-import com.hmn.testaicode.ui.screens.id_matching.constants.ConnectorInactive
 import com.hmn.testaicode.ui.screens.id_matching.constants.SuccessGreen
-import com.hmn.testaicode.ui.screens.id_matching.constants.SurfaceCard
-import com.hmn.testaicode.ui.screens.id_matching.constants.TextSecondary
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 
 @Composable
@@ -54,6 +50,11 @@ fun IdUploadMiniCard(
     previewBitmap: Bitmap? = null,
     onCaptureClick: () -> Unit,
 ) {
+    val scheme = MaterialTheme.colorScheme
+    val cardFill = scheme.surfaceVariant.copy(alpha = 0.55f)
+    val dashedBorder = scheme.outline.copy(alpha = 0.55f)
+    val mutedText = scheme.onSurface.copy(alpha = 0.62f)
+
     Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -62,7 +63,7 @@ fun IdUploadMiniCard(
         ) {
             Text(
                 text = title,
-                color = Color.White,
+                color = scheme.onSurface,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
             )
@@ -83,7 +84,7 @@ fun IdUploadMiniCard(
                         .fillMaxSize()
                         .clip(RoundedCornerShape(14.dp)),
                     shape = RoundedCornerShape(14.dp),
-                    color = SurfaceCard,
+                    color = cardFill,
                     border = BorderStroke(2.dp, SuccessGreen),
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
@@ -107,7 +108,7 @@ fun IdUploadMiniCard(
                             ) {
                                 Text(
                                     text = previewLabel,
-                                    color = TextSecondary,
+                                    color = mutedText,
                                     fontSize = 12.sp,
                                 )
                             }
@@ -119,13 +120,13 @@ fun IdUploadMiniCard(
                                 .padding(8.dp)
                                 .size(36.dp),
                             shape = CircleShape,
-                            color = Color(0xFF2A2A2A),
+                            color = scheme.inverseSurface,
                         ) {
                             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                 Icon(
                                     imageVector = Icons.Outlined.Replay,
                                     contentDescription = "Retake",
-                                    tint = Color.White,
+                                    tint = scheme.inverseOnSurface,
                                     modifier = Modifier.size(18.dp),
                                 )
                             }
@@ -138,10 +139,10 @@ fun IdUploadMiniCard(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(RoundedCornerShape(14.dp))
-                        .background(SurfaceCard)
+                        .background(cardFill)
                         .drawBehind {
                             drawRoundRect(
-                                color = ConnectorInactive,
+                                color = dashedBorder,
                                 style = Stroke(
                                     width = 2.dp.toPx(),
                                     pathEffect = PathEffect.dashPathEffect(dash, 0f),
@@ -159,19 +160,19 @@ fun IdUploadMiniCard(
                         Icon(
                             imageVector = Icons.Outlined.CameraAlt,
                             contentDescription = null,
-                            tint = AccentYellow,
+                            tint = scheme.primary,
                             modifier = Modifier.size(32.dp),
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Tap to capture",
-                            color = Color.White,
+                            color = scheme.onSurface,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                         )
                         Text(
                             text = "Clear details",
-                            color = TextSecondary,
+                            color = mutedText,
                             fontSize = 11.sp,
                         )
                     }

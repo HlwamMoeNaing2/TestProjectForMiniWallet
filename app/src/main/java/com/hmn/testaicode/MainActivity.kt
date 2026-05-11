@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hmn.testaicode.navigation.Routes
+import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.EnterPhoneNumberScreen
 import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.selfie_capture.FaceDetectionScreen
 import com.hmn.testaicode.ui.screens.id_capture.IDCaptureScreen
