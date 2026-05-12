@@ -4,9 +4,12 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hmn.testaicode.data.AppStorageProviderRepo
 import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.global_constants.toFolderName
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import javax.inject.Inject
 
 private const val TAG = "IDCaptureViewModel"
 
@@ -24,11 +28,11 @@ data class IDCaptureUiState(
     val isCapturing: Boolean = false,
     val isSubmitting: Boolean = false,
     val capturedBitmap: Bitmap? = null,
-    val savedFilePath: String? = null,
     val errorMessage: String? = null,
 )
 
-class IDCaptureViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class IDCaptureViewModel @Inject constructor(private val appStorageRepo: AppStorageProviderRepo) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IDCaptureUiState())
     val uiState: StateFlow<IDCaptureUiState> = _uiState.asStateFlow()
@@ -72,13 +76,12 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
             it.copy(
                 isCapturing = false,
                 capturedBitmap = null,
-                savedFilePath = null,
                 errorMessage = null,
             )
         }
     }
 
-    fun submitCaptured(imageType: ImageType, onSubmitSuccess: (String) -> Unit = {}) {
+    fun submitCaptured(imageType: ImageType) {
         val bitmap = _uiState.value.capturedBitmap
         if (bitmap == null) {
             onCaptureError("No captured image to submit")
@@ -88,11 +91,11 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true, errorMessage = null) }
             runCatching {
-                saveBitmapToAppStorage(bitmap, imageType)
+                appStorageRepo.saveBitmapToAppStorage(bitmap, imageType)
             }.onSuccess { path ->
                 Log.d(TAG, "Image saved: $path")
-                _uiState.update { it.copy(isSubmitting = false, savedFilePath = path) }
-                onSubmitSuccess(path)
+                _uiState.update { it.copy(isSubmitting = false) }
+               // onSubmitSuccess(path)
             }.onFailure { error ->
                 Log.e(TAG, "Submit failed", error)
                 _uiState.update {
@@ -104,42 +107,6 @@ class IDCaptureViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
-
-    /**
-     * Writes exactly one file per [ImageType] under `files/id_capture/`:
-     * - `com_hmn_selfie_.jpg`
-     * - `com_hmn_front.jpg`
-     * - `com_hmn_back.jpg`
-     *
-     * Re-saving the same type deletes the previous file first so there are never duplicates.
-     */
-    private suspend fun saveBitmapToAppStorage(bitmap: Bitmap, imageType: ImageType): String =
-        withContext(Dispatchers.IO) {
-            val context = getApplication<Application>()
-            val parent = File(context.filesDir, "id_capture")
-            if (!parent.exists()) {
-                check(parent.mkdirs()) { "Unable to create folder: ${parent.absolutePath}" }
-            }
-
-            val baseName = imageType.toFolderName()
-            val file = File(parent, "$baseName.jpg")
-
-            if (file.exists()) {
-                check(file.delete()) {
-                    "Unable to delete existing file for replace: ${file.absolutePath}"
-                }
-            }
-
-            FileOutputStream(file).use { stream ->
-                val ok = bitmap.compress(Bitmap.CompressFormat.JPEG, 92, stream)
-                check(ok) { "Bitmap compression failed" }
-                stream.flush()
-                runCatching { stream.fd.sync() }
-            }
-
-            file.absolutePath
-        }
-
     override fun onCleared() {
         super.onCleared()
         val bitmap = _uiState.value.capturedBitmap

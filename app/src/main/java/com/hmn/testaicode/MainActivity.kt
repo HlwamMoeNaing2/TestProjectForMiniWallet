@@ -123,9 +123,7 @@ fun MyApp(modifier: Modifier) {
 
                 FaceDetectionScreen(
                     modifier = modifier,
-                    imageType = imageType,
-                    onSubmitSuccess = { navController.popBackStack() },
-                )
+                    )
             }
             composable(
                 route = "${Routes.ID_CAPTURING_SCREEN}/{imageType}",
@@ -141,7 +139,7 @@ fun MyApp(modifier: Modifier) {
                     modifier = modifier,
                     imageType = imageType,
                     onClose = { navController.popBackStack() },
-                    onSubmitSuccess = { navController.popBackStack() },
+
                 )
             }
             composable(Routes.PERSONAL_INFO_SCREEN) {

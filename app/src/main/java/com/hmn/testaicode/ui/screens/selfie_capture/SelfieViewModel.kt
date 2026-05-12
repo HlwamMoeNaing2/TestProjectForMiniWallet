@@ -1,9 +1,12 @@
 package com.hmn.testaicode.ui.screens.selfie_capture
 
 import android.graphics.Bitmap
+import android.provider.Contacts
 import androidx.camera.core.CameraSelector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hmn.testaicode.data.AppStorageProviderRepo
+import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.utils.BitmapEncoder
 import com.hmn.testaicode.ui.screens.utils.BitmapUtils
 import com.hmn.testaicode.ui.screens.utils.UiState
@@ -15,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelfieViewModel @Inject constructor(
-    private val bitmapEncoder: BitmapEncoder,
+    private val appStorageRepo: AppStorageProviderRepo
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<String>>(UiState.Idle)
 
@@ -29,28 +32,19 @@ class SelfieViewModel @Inject constructor(
     }
 
     fun saveBitmap(
-        bitmap: Bitmap,
-        isFromMissingInfoJourney: Boolean,
-        lensFacing: Int = CameraSelector.LENS_FACING_FRONT,
+        imageType: ImageType,
+        bitmap: Bitmap
     ) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            val orientedBitmap =
-                if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
-                    BitmapUtils.flipBitmapHorizontallySafe(bitmap)
-                } else {
-                    bitmap
-                }
-            try {
-                val bitmapEncodeResult = bitmapEncoder.encode("live-photo", orientedBitmap)
-                val filePath = bitmapEncodeResult.file.absolutePath
-                //  waveKycImagePrefManager.saveFacePhotoPath(filePath)
-                _uiState.value = UiState.Success(filePath)
-            } finally {
-                if (orientedBitmap !== bitmap && !orientedBitmap.isRecycled) {
-                    orientedBitmap.recycle()
-                }
+            runCatching {
+                appStorageRepo.saveBitmapToAppStorage(bitmap, imageType)
+            }.onSuccess {
+                _uiState.value = UiState.Success("")
+            }.onFailure {
+                _uiState.value = UiState.Error("Something went wrong")
             }
+
         }
     }
 

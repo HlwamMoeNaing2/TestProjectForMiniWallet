@@ -40,7 +40,9 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hmn.testaicode.ui.screens.LifecycleLogger
 import com.hmn.testaicode.ui.screens.global_constants.ImageType
 import com.hmn.testaicode.ui.screens.selfie_capture.components.CameraView
@@ -61,13 +63,16 @@ private const val FACE_CAPTURE_TAG = "FaceDetectionScreen"
 @Composable
 fun FaceDetectionScreen(
     modifier: Modifier = Modifier,
-    imageType: ImageType,
-    onSubmitSuccess: (String) -> Unit = {},
 ) {
     if (LocalInspectionMode.current) {
         FaceDetectionPreviewContent(modifier)
         return
     }
+
+    val viewModel: SelfieViewModel = hiltViewModel()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+
 
     LifecycleLogger("FaceDetectionScreen")
     val context: Context = LocalContext.current
@@ -76,7 +81,7 @@ fun FaceDetectionScreen(
     var isCameraShown by remember { mutableStateOf(true) }
     var isFaceDetected by remember { mutableStateOf(false) }
 
-    var capturedPhoto by remember { mutableStateOf<ImageBitmap?>(null) }
+    var capturedPhoto by remember { mutableStateOf<Bitmap?>(null) }
     var ovalCenter by remember { mutableStateOf<Offset?>(null) }
 
     val cameraController: LifecycleCameraController = remember {
@@ -87,7 +92,7 @@ fun FaceDetectionScreen(
             imageAnalysisBackpressureStrategy = ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
             setEnabledUseCases(
                 CameraController.IMAGE_CAPTURE or
-                    CameraController.IMAGE_ANALYSIS
+                        CameraController.IMAGE_ANALYSIS
             )
         }
     }
@@ -120,7 +125,10 @@ fun FaceDetectionScreen(
             FaceDetector(
                 onFaceDetected = { detected ->
                     if (isFaceDetected != detected) {
-                        Log.d(FACE_CAPTURE_TAG, "onFaceDetected changed: $isFaceDetected -> $detected")
+                        Log.d(
+                            FACE_CAPTURE_TAG,
+                            "onFaceDetected changed: $isFaceDetected -> $detected"
+                        )
                         isFaceDetected = detected
                     }
                 },
@@ -142,7 +150,8 @@ fun FaceDetectionScreen(
                 CameraView(PaddingValues(), cameraPreviewView)
             } else {
                 capturedPhoto?.let { photo ->
-                    CapturedPhotoView(photo)
+                    val convertImageBitMap = photo.asImageBitmap()
+                    CapturedPhotoView(convertImageBitMap)
                 }
             }
 
@@ -170,8 +179,11 @@ fun FaceDetectionScreen(
                             cameraController,
                             isFaceDetected
                         ) { capturedBitmap ->
-                            Log.d(FACE_CAPTURE_TAG, "Capture success. bitmap=${capturedBitmap.width}x${capturedBitmap.height}")
-                            capturedPhoto = capturedBitmap.asImageBitmap()
+                            Log.d(
+                                FACE_CAPTURE_TAG,
+                                "Capture success. bitmap=${capturedBitmap.width}x${capturedBitmap.height}"
+                            )
+                            capturedPhoto = capturedBitmap
                             if (isFaceDetected)
                                 isCameraShown = false
                         }
@@ -183,7 +195,10 @@ fun FaceDetectionScreen(
                         .align(Alignment.BottomCenter)
                         .padding(horizontal = 32.dp, vertical = 50.dp),
                     onSubmit = {
-                        Log.d(FACE_CAPTURE_TAG, "Submit clicked. capturedPhotoExists=${capturedPhoto != null}")
+                        Log.d(
+                            FACE_CAPTURE_TAG,
+                            "Submit clicked. capturedPhotoExists=${capturedPhoto != null}"
+                        )
 
                         val mText = if (capturedPhoto == null) "Null" else "Is value exist"
 
@@ -193,9 +208,7 @@ fun FaceDetectionScreen(
                             Toast.LENGTH_SHORT,
                         ).show()
 
-                        if (capturedPhoto != null) {
-                            onSubmitSuccess(imageType.name)
-                        }
+                        capturedPhoto?.let { viewModel.saveBitmap(ImageType.SELFIE, it) }
                     },
                 )
             }
@@ -231,7 +244,10 @@ private fun capturePhotoAndReplaceBackground(
             mainExecutor,
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
-                    Log.d(FACE_CAPTURE_TAG, "onCaptureSuccess rotation=${image.imageInfo.rotationDegrees}")
+                    Log.d(
+                        FACE_CAPTURE_TAG,
+                        "onCaptureSuccess rotation=${image.imageInfo.rotationDegrees}"
+                    )
                     val capturedBitmap: Bitmap =
                         image.toBitmap().rotateBitmap(image.imageInfo.rotationDegrees)
 
@@ -257,7 +273,7 @@ private fun processCapturedPhotoAndReplaceBackground(
     onBackgroundReplaced(capturedBitmap)
 }
 
-@Preview(showBackground = true, showSystemUi = true,uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun FaceDetectionScreenPreview() {
     TestAICodeTheme {

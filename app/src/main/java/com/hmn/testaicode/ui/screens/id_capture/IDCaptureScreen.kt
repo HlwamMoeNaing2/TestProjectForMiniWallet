@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hmn.testaicode.ui.screens.global_constants.ImageType
@@ -79,8 +80,7 @@ fun IDCaptureScreen(
     imageType: ImageType,
     onClose: () -> Unit = {},
     onHelp: () -> Unit = {},
-    onSubmitSuccess: (String) -> Unit = {},
-) {
+    ) {
     if (LocalInspectionMode.current) {
         IDCapturePreviewContent(modifier = modifier)
         return
@@ -89,7 +89,7 @@ fun IDCaptureScreen(
     val tag = "IDCaptureScreen"
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    val viewModel: IDCaptureViewModel = viewModel()
+    val viewModel: IDCaptureViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -316,7 +316,7 @@ fun IDCaptureScreen(
                                 )
                             },
                             onSubmit = {
-                                viewModel.submitCaptured(imageType = imageType, onSubmitSuccess = onSubmitSuccess)
+                                viewModel.submitCaptured(imageType = imageType)
                             },
                             onRetake = { viewModel.retake() },
                         )
