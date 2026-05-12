@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -72,6 +75,7 @@ fun EnterPhoneNumberScreen(
                 )
             )
             .windowInsetsPadding(WindowInsets.systemBars)
+            .imePadding()
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         Box(
@@ -81,49 +85,60 @@ fun EnterPhoneNumberScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .fillMaxHeight(0.90f),
                 shape = RoundedCornerShape(36.dp),
                 color = Color.White,
                 shadowElevation = 2.dp,
                 tonalElevation = 0.dp
             ) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 28.dp, vertical = 32.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 28.dp, vertical = 28.dp)
                 ) {
-                    WalletBrandIcon()
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = "Welcome to Lumen",
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        lineHeight = 32.sp
-                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        WalletBrandIcon()
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(
+                            text = "Welcome to Lumen",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            lineHeight = 32.sp
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Enter your phone number to securely sign in or create your wallet.",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = SubtitleColor,
+                            lineHeight = 22.sp
+                        )
+                        Spacer(modifier = Modifier.height(28.dp))
+                        Text(
+                            text = "PHONE NUMBER",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            letterSpacing = 0.8.sp,
+                            color = LabelColor
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        PhoneNumberField(
+                            country = countryList.first(),
+                            onCountryClick = { showCountryPicker = true /*countryViewModel.openPicker()*/ },
+                            value = phoneNumber,
+                            onValueChange = { phoneNumber = it },
+                            placeholder = "555 000 1234"
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Enter your phone number to securely sign in or create your wallet.",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = SubtitleColor,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(28.dp))
-                    Text(
-                        text = "PHONE NUMBER",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium,
-                        letterSpacing = 0.8.sp,
-                        color = LabelColor
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    PhoneNumberField(
-                        country = countryList.first(),
-                        onCountryClick = { showCountryPicker = true /*countryViewModel.openPicker()*/ },
-                        value = phoneNumber,
-                        onValueChange = { phoneNumber = it },
-                        placeholder = "555 000 1234"
-                    )
-                    Spacer(modifier = Modifier.height(50.dp))
                     GradientContinueButton(
                         enabled = phoneNumber.isValidPhone(),
                         onClick = {
