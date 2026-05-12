@@ -2,7 +2,7 @@ package com.hmn.testaicode.ui.screens.personalInfo.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -38,10 +38,14 @@ fun LabeledField(
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .heightIn(min = 56.dp),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 18.sp,
+                lineHeight = 22.sp,
+            ),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = scheme.primary.copy(alpha = 0.75f),
                 unfocusedBorderColor = scheme.outline.copy(alpha = 0.65f),
