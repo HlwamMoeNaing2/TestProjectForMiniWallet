@@ -63,7 +63,11 @@ fun GradientContinueButton(
                 text = text,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (enabled) Color.White else scheme.onSurface.copy(alpha = 0.38f)
+                color = if (enabled) {
+                    Color.White
+                } else {
+                    scheme.onSurface.copy(alpha = 0.55f)
+                }
             )
         }
     }

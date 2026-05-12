@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,8 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
@@ -40,12 +39,8 @@ import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.TermsFoot
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.WalletBrandIcon
 import com.hmn.testaicode.ui.components.dialog.CountryPickerDialog
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
+import com.hmn.testaicode.ui.theme.appBackgroundBrush
 import com.hmn.testaicode.extension.isValidPhone
-
- val ScreenGradientTop = Color(0xFFF3F0FF)
- val ScreenGradientBottom = Color(0xFFFFFBFE)
- val SubtitleColor = Color(0xFF757575)
- val LabelColor = Color(0xFF9E9E9E)
 
 @Composable
 fun EnterPhoneNumberScreen(
@@ -65,15 +60,12 @@ fun EnterPhoneNumberScreen(
 
     var showCountryPicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val scheme = MaterialTheme.colorScheme
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(ScreenGradientTop, ScreenGradientBottom)
-                )
-            )
+            .background(brush = appBackgroundBrush())
             .windowInsetsPadding(WindowInsets.systemBars)
             .imePadding()
             .padding(horizontal = 20.dp, vertical = 16.dp)
@@ -87,7 +79,7 @@ fun EnterPhoneNumberScreen(
                     .fillMaxWidth()
                     .fillMaxHeight(0.90f),
                 shape = RoundedCornerShape(36.dp),
-                color = Color.White,
+                color = scheme.surface,
                 shadowElevation = 2.dp,
                 tonalElevation = 0.dp
             ) {
@@ -108,7 +100,7 @@ fun EnterPhoneNumberScreen(
                             text = "Welcome to Lumen",
                             fontSize = 26.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            color = scheme.onSurface,
                             lineHeight = 32.sp
                         )
                         Spacer(modifier = Modifier.height(12.dp))
@@ -116,7 +108,7 @@ fun EnterPhoneNumberScreen(
                             text = "Enter your phone number to securely sign in or create your wallet.",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Normal,
-                            color = SubtitleColor,
+                            color = scheme.onSurfaceVariant,
                             lineHeight = 22.sp
                         )
                         Spacer(modifier = Modifier.height(28.dp))
@@ -125,7 +117,7 @@ fun EnterPhoneNumberScreen(
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium,
                             letterSpacing = 0.8.sp,
-                            color = LabelColor
+                            color = scheme.onSurfaceVariant.copy(alpha = 0.85f)
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         PhoneNumberField(

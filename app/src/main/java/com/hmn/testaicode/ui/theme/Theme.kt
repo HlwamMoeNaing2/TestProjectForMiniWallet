@@ -12,16 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = LumenPrimary,
-    secondary = LumenSecondary,
-    tertiary = LumenBrandStart,
+    // Dark mode: use deeper brand tones so onPrimary/onSecondary stay readable (white).
+    primary = LumenBrandStart,
+    secondary = LumenBrandEnd,
+    tertiary = LumenPrimary,
     background = Color(0xFF0F0F14),
-    surface = Color(0xFF14141A),
-    onPrimary = Color(0xFF111111),
-    onSecondary = Color(0xFF111111),
-    onTertiary = Color.White,
+    surface = Color(0xFF1C1C24),
+    surfaceVariant = Color(0xFF2A2A34),
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color(0xFF111111),
     onBackground = Color(0xFFF2F2F2),
-    onSurface = Color(0xFFF2F2F2)
+    onSurface = Color(0xFFF2F2F2),
+    onSurfaceVariant = Color(0xFFCACACA),
+    outline = Color(0xFF3F3F4A),
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -30,11 +34,13 @@ private val LightColorScheme = lightColorScheme(
     tertiary = LumenBrandStart,
     background = LumenGradientBottom,
     surface = Color.White,
-    onPrimary = Color.White,
+    surfaceVariant = LumenCountryChipBg,
+    onPrimary = Color(0xFF1B1B1F),
     onSecondary = Color(0xFF1B1B1F),
     onTertiary = Color.White,
     onBackground = Color(0xFF1B1B1F),
     onSurface = Color(0xFF1B1B1F),
+    onSurfaceVariant = LumenSubtitle,
     outline = LumenInputStroke
 
     /* Other default colors to override

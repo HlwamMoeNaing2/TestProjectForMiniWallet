@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -35,8 +33,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmn.testaicode.data.CountryModel
-import com.hmn.testaicode.ui.theme.LumenCountryChipBg
-import com.hmn.testaicode.ui.theme.LumenPlaceholder
 
 @Composable
 fun PhoneNumberField(
@@ -46,13 +42,14 @@ fun PhoneNumberField(
     onValueChange: (String) -> Unit,
     placeholder: String,
 ) {
+    val scheme = MaterialTheme.colorScheme
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(28.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(28.dp))
-            .background(MaterialTheme.colorScheme.surface),
+            .border(1.dp, scheme.outline, RoundedCornerShape(28.dp))
+            .background(scheme.surface),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CountryPickerChip(
@@ -72,11 +69,11 @@ fun PhoneNumberField(
             textStyle = TextStyle(
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color(0xFF212121)
+                color = scheme.onSurface
             ),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            cursorBrush = SolidColor(Color(0xFF7E57C2)),
+            cursorBrush = SolidColor(scheme.primary),
             decorationBox = { inner ->
                 Box(
                     modifier = Modifier.fillMaxWidth(),
@@ -87,7 +84,7 @@ fun PhoneNumberField(
                             text = placeholder,
                             style = TextStyle(
                                 fontSize = 17.sp,
-                                color = LumenPlaceholder
+                                color = scheme.onSurfaceVariant
                             )
                         )
                     }
@@ -104,10 +101,11 @@ fun CountryPickerChip(
     country: CountryModel,
     onClick: () -> Unit,
 ) {
+    val scheme = MaterialTheme.colorScheme
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(topStart = 28.dp, bottomStart = 28.dp))
-            .background(LumenCountryChipBg)
+            .background(scheme.surfaceVariant)
             .selectable(
                 selected = false,
                 role = Role.Button,
@@ -126,12 +124,12 @@ fun CountryPickerChip(
             text = country.countryCode,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF424242)
+            color = scheme.onSurface
         )
         Icon(
             imageVector = Icons.Outlined.KeyboardArrowDown,
             contentDescription = null,
-            tint = Color(0xFF757575),
+            tint = scheme.onSurfaceVariant,
             modifier = Modifier.size(18.dp)
         )
     }
