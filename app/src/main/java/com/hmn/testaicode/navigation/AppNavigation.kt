@@ -126,34 +126,33 @@ fun AppNavigation(modifier: Modifier) {
                 MainMenuScreen(
                     modifier = modifier,
                     onNavigateToWalletTransfer = {
-                        navController.navigate(Routes.WALLET_TRANSFER_SCREEN)
+                        navController.navigate(Routes.WALLET_TRANSFER_SCREEN) {
+                            launchSingleTop = true
+                        }
                     },
                 )
             }
+        }
 
+        // Non-tab destinations (reachable from anywhere inside Main Menu).
+        composable(Routes.CASH_IN_SCREEN) {
+            CashInScreen(modifier)
+        }
 
-            composable(Routes.CASH_IN_SCREEN) {
-                CashInScreen(modifier)
-            }
+        composable(Routes.CASH_OUT_SCREEN) {
+            CashOutScreen(modifier)
+        }
 
+        composable(Routes.WALLET_TRANSFER_SCREEN) {
+            WalletTransferScreen(modifier)
+        }
 
-            composable (Routes.CASH_OUT_SCREEN){
-                CashOutScreen(modifier)
-            }
+        composable(Routes.FULL_TRANSACTION_HISTORY_SCREEN) {
+            FullTransactionHistoryList()
+        }
 
-            composable(Routes.WALLET_TRANSFER_SCREEN) {
-                WalletTransferScreen(modifier)
-            }
-
-           composable(Routes.FULL_TRANSACTION_HISTORY_SCREEN){
-               FullTransactionHistoryList()
-           }
-
-
-
-            composable(Routes.RECEIPT_SCREEN){
-                HistoryDetailUiModel()
-            }
+        composable(Routes.RECEIPT_SCREEN) {
+            HistoryDetailUiModel()
         }
     }
 }
