@@ -13,7 +13,7 @@ import com.hmn.testaicode.ui.screens.cash_in.CashInScreen
 import com.hmn.testaicode.ui.screens.cash_out.CashOutScreen
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.EnterPhoneNumberScreen
 import com.hmn.testaicode.ui.screens.global_constants.ImageType
-import com.hmn.testaicode.ui.screens.history_detail.HistoryDetailUiModel
+import com.hmn.testaicode.ui.screens.history_detail.HistoryDetailScreen
 import com.hmn.testaicode.ui.screens.id_capture.IDCaptureScreen
 import com.hmn.testaicode.ui.screens.id_matching.SelfieMatchingScreen
 import com.hmn.testaicode.ui.screens.main_menu.MainMenuScreen
@@ -41,7 +41,7 @@ fun AppNavigation(modifier: Modifier) {
                     } else {
                         Routes.REGISTRATION_GRAPH
                     }
-                    navController.navigate(destination) {
+                    navController.navigate(Routes.MAIN_MENU_GRAPH) {
                         popUpTo(Routes.STARTUP_SCREEN) { inclusive = true }
                     }
                 },
@@ -144,7 +144,7 @@ fun AppNavigation(modifier: Modifier) {
         }
 
         composable(Routes.WALLET_TRANSFER_SCREEN) {
-            WalletTransferScreen(modifier)
+            WalletTransferScreen(modifier,navController)
         }
 
         composable(Routes.FULL_TRANSACTION_HISTORY_SCREEN) {
@@ -152,7 +152,7 @@ fun AppNavigation(modifier: Modifier) {
         }
 
         composable(Routes.RECEIPT_SCREEN) {
-            HistoryDetailUiModel()
+            HistoryDetailScreen(modifier = modifier)
         }
     }
 }

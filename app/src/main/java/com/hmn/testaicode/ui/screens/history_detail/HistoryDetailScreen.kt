@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens.history_detail
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -64,6 +65,7 @@ fun HistoryDetailScreen(
     onDownload: () -> Unit = {},
     onShare: () -> Unit = {},
 ) {
+    Log.d("#Hmn", "HistoryDetailScreen: ")
     val scheme = MaterialTheme.colorScheme
     val positiveColor = scheme.primary
     val detailBg = scheme.surfaceVariant.copy(alpha = 0.55f)
@@ -80,7 +82,7 @@ fun HistoryDetailScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding( vertical = 14.dp)
+                .padding(vertical = 14.dp)
             ,
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(containerColor = scheme.surface),

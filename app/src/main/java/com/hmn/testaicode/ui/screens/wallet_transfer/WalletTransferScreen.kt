@@ -52,7 +52,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hmn.testaicode.extension.isValidPhone
+import com.hmn.testaicode.navigation.Routes
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
 import com.hmn.testaicode.ui.screens.wallet_transfer.components.FieldLabel
 import com.hmn.testaicode.ui.screens.wallet_transfer.components.SendMoneyGradientButton
@@ -65,6 +68,7 @@ fun WalletTransferScreen(
     //availableBalanceDisplay: String = "$5,234.50",
    // transferFeeDisplay: String = "Free",
     //onSendMoney: (recipient: String, amount: String, note: String) -> Unit = { _, _, _ -> },
+    navController: NavController
 ) {
     val scheme = MaterialTheme.colorScheme
     val context = LocalContext.current
@@ -293,6 +297,7 @@ fun WalletTransferScreen(
                 onClick = {
                     Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
                     //onSendMoney(recipient.trim(), amount, note.trim())
+                    navController.navigate(Routes.RECEIPT_SCREEN)
                 }
             )
 
@@ -337,6 +342,6 @@ private fun filterMoneyInput(raw: String): String {
 @Composable
 private fun WalletTransferScreenPreview() {
     TestAICodeTheme {
-        WalletTransferScreen()
+        WalletTransferScreen(navController = rememberNavController())
     }
 }
