@@ -59,6 +59,7 @@ import com.hmn.testaicode.ui.theme.appBackgroundBrush
 @Composable
 fun CashOutScreen(
     modifier: Modifier = Modifier,
+    onSuccess:() -> Unit = {}
    // onWithdraw: (String, CashOutMethod) -> Unit = { _, _ -> },
 ) {
     val scheme = MaterialTheme.colorScheme
@@ -251,10 +252,7 @@ fun CashOutScreen(
 
                 GradientContinueButton(
                     enabled = canWithdraw,
-                    onClick = {
-                        Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                        //onWithdraw(amount, selectedMethod)
-                    }
+                    onClick = onSuccess
                 )
 
 /*

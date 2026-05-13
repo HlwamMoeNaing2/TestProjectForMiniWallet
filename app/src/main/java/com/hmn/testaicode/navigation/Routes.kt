@@ -1,5 +1,6 @@
 package com.hmn.testaicode.navigation
 
+import com.hmn.testaicode.ui.screens.cash_in_out_success_screen.CICMode
 import com.hmn.testaicode.ui.screens.global_constants.ImageType
 
 object Routes {
@@ -23,10 +24,13 @@ object Routes {
     const val WALLET_TRANSFER_SCREEN = "WALLET_TRANSFER_SCREEN"
     const val FULL_TRANSACTION_HISTORY_SCREEN = "FULL_TRANSACTION_HISTORY_SCREEN"
     const val RECEIPT_SCREEN = "RECEIPT_SCREEN"
+    const val CI_CO_SUCCESS = "CI_CO_SUCCESS"
 
 
     fun faceDetectionScreen(imageType: ImageType) = "$FACE_DETECTION_SCREEN/${imageType.name}"
 
     fun iDCaptureScreen(imageType: ImageType) = "$ID_CAPTURING_SCREEN/${imageType.name}"
+
+    fun toCiCoSuccess(mode: CICMode) = "$CI_CO_SUCCESS/${mode.name}"
 
 }

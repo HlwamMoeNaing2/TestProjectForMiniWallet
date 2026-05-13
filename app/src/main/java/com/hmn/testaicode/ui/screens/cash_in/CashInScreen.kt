@@ -64,6 +64,7 @@ import com.hmn.testaicode.ui.theme.appBackgroundBrush
 @Composable
 fun CashInScreen(
     modifier: Modifier = Modifier,
+    onSuccess:() -> Unit = {}
 //    onAddMoney: (String, CashInMethod) -> Unit = { _, _ -> },
 ) {
 
@@ -236,10 +237,7 @@ fun CashInScreen(
 
                 GradientContinueButton(
                     enabled = canSubmit,
-                    onClick = {
-                        Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                        //onAddMoney(amount, selectedMethod)
-                    }
+                    onClick =onSuccess
                 )
 
 

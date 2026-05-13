@@ -10,6 +10,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hmn.testaicode.ui.screens.cash_in.CashInScreen
+import com.hmn.testaicode.ui.screens.cash_in_out_success_screen.CICMode
+import com.hmn.testaicode.ui.screens.cash_in_out_success_screen.CICOSuccessScreen
 import com.hmn.testaicode.ui.screens.cash_out.CashOutScreen
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.EnterPhoneNumberScreen
 import com.hmn.testaicode.ui.screens.global_constants.ImageType
@@ -131,13 +133,13 @@ fun AppNavigation(modifier: Modifier) {
                         }
                     },
                     onNavigateToCashIn = {
-                        navController.navigate(Routes.CASH_IN_SCREEN){
+                        navController.navigate(Routes.CASH_IN_SCREEN) {
                             launchSingleTop = true
                         }
                     },
 
                     onNavigateToCashOut = {
-                        navController.navigate(Routes.CASH_OUT_SCREEN){
+                        navController.navigate(Routes.CASH_OUT_SCREEN) {
                             launchSingleTop = true
                         }
                     }
@@ -147,15 +149,25 @@ fun AppNavigation(modifier: Modifier) {
 
         // Non-tab destinations (reachable from anywhere inside Main Menu).
         composable(Routes.CASH_IN_SCREEN) {
-            CashInScreen(modifier)
+            CashInScreen(
+                modifier = modifier,
+                onSuccess = {
+                    navController.navigate(Routes.toCiCoSuccess(CICMode.CASH_IN))
+                }
+            )
         }
 
         composable(Routes.CASH_OUT_SCREEN) {
-            CashOutScreen(modifier)
+            CashOutScreen(
+                modifier = modifier,
+                onSuccess = {
+                    navController.navigate(Routes.toCiCoSuccess(CICMode.CASH_OUT))
+                }
+            )
         }
 
         composable(Routes.WALLET_TRANSFER_SCREEN) {
-            WalletTransferScreen(modifier,navController)
+            WalletTransferScreen(modifier, navController)
         }
 
         composable(Routes.FULL_TRANSACTION_HISTORY_SCREEN) {
@@ -165,6 +177,29 @@ fun AppNavigation(modifier: Modifier) {
         composable(Routes.RECEIPT_SCREEN) {
             HistoryDetailScreen(modifier = modifier)
         }
+
+        composable(
+            route = "${Routes.CI_CO_SUCCESS}/{mode}",
+            arguments = listOf(
+                navArgument("mode") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val cicMode = runCatching {
+                CICMode.valueOf(backStackEntry.arguments?.getString("mode") ?: "")
+            }.getOrDefault(CICMode.CASH_OUT)
+
+            CICOSuccessScreen(
+                modifier = modifier,
+                mode =cicMode,
+                rootNavController = navController
+            )
+        }
+
+
+
+
+
+
     }
 }
 
