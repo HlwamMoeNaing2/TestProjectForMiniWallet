@@ -18,6 +18,13 @@ object Routes {
     const val PERSONAL_INFO_SCREEN = "PERSONAL_INFO_SCREEN"
     const val MAIN_MENU_SCREEN = "MAIN_MENU_SCREEN"
 
+    const val CASH_IN_SCREEN = "CASH_IN_SCREEN"
+    const val CASH_OUT_SCREEN = "CASH_OUT_SCREEN"
+    const val WALLET_TRANSFER_SCREEN = "WALLET_TRANSFER_SCREEN"
+    const val FULL_TRANSACTION_HISTORY_SCREEN = "FULL_TRANSACTION_HISTORY_SCREEN"
+    const val RECEIPT_SCREEN = "RECEIPT_SCREEN"
+
+
     fun faceDetectionScreen(imageType: ImageType) = "$FACE_DETECTION_SCREEN/${imageType.name}"
 
     fun iDCaptureScreen(imageType: ImageType) = "$ID_CAPTURING_SCREEN/${imageType.name}"

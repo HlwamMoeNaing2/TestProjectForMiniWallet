@@ -185,6 +185,8 @@ fun MyApp(modifier: Modifier) {
             composable(Routes.MAIN_MENU_SCREEN) {
                 MainMenuScreen(modifier = modifier)
             }
+
+
         }
     }
 }
