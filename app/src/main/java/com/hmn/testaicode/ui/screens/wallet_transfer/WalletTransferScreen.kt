@@ -300,6 +300,7 @@ fun WalletTransferScreen(
                 onClick = {
                     // TODO show dialog for UI preview
                     showErrorDialog = true
+                    navController.navigate(Routes.WALLET_TRANSFER_SUCCESS_SCREEN)
                 }
             )
 

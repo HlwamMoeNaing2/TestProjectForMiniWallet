@@ -23,6 +23,7 @@ import com.hmn.testaicode.ui.screens.personalInfo.PersonalInfoSubmitScreen
 import com.hmn.testaicode.ui.screens.selfie_capture.FaceDetectionScreen
 import com.hmn.testaicode.ui.screens.splash.SplashScreen
 import com.hmn.testaicode.ui.screens.transaction_history_full_list.FullTransactionHistoryList
+import com.hmn.testaicode.ui.screens.wallet_transfer.TransferSuccessScreen
 import com.hmn.testaicode.ui.screens.wallet_transfer.WalletTransferScreen
 import kotlinx.coroutines.delay
 
@@ -174,7 +175,7 @@ fun AppNavigation(modifier: Modifier) {
             FullTransactionHistoryList()
         }
 
-        composable(Routes.RECEIPT_SCREEN) {
+        composable(Routes.TRANSACTION_DETAIL) {
             HistoryDetailScreen(modifier = modifier)
         }
 
@@ -196,7 +197,9 @@ fun AppNavigation(modifier: Modifier) {
         }
 
 
-
+        composable(Routes.WALLET_TRANSFER_SUCCESS_SCREEN) {
+            TransferSuccessScreen(modifier = modifier)
+        }
 
 
 
