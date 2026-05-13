@@ -130,6 +130,17 @@ fun AppNavigation(modifier: Modifier) {
                             launchSingleTop = true
                         }
                     },
+                    onNavigateToCashIn = {
+                        navController.navigate(Routes.CASH_IN_SCREEN){
+                            launchSingleTop = true
+                        }
+                    },
+
+                    onNavigateToCashOut = {
+                        navController.navigate(Routes.CASH_OUT_SCREEN){
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
         }

@@ -37,6 +37,8 @@ private object MainMenuTabRoutes {
 fun MainMenuScreen(
     modifier: Modifier = Modifier,
     onNavigateToWalletTransfer: () -> Unit = {},
+    onNavigateToCashIn:() -> Unit = {},
+    onNavigateToCashOut:() -> Unit = {}
 ) {
     val tabNavController = rememberNavController()
     val currentBackStackEntry = tabNavController.currentBackStackEntryAsState()
@@ -77,7 +79,11 @@ fun MainMenuScreen(
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(MainMenuTabRoutes.HOME) {
-                HomeScreen(onTransfer = onNavigateToWalletTransfer)
+                HomeScreen(
+                    onTransfer = onNavigateToWalletTransfer,
+                    onCashIn = onNavigateToCashIn,
+                    onCashOut = onNavigateToCashOut
+                    )
             }
             composable(MainMenuTabRoutes.INBOX) {
                 InboxScreen()
