@@ -92,7 +92,7 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f),
                         icon = Icons.Outlined.SyncAlt,
                         label = "Transfer",
-                        onClick = onTransfer
+                        onClick = onTransfer,
                     )
                     QuickActionTile(
                         modifier = Modifier.weight(1f),

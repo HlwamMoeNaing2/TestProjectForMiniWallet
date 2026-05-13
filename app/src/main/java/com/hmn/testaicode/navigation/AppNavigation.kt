@@ -123,7 +123,12 @@ fun AppNavigation(modifier: Modifier) {
             startDestination = Routes.MAIN_MENU_SCREEN,
         ) {
             composable(Routes.MAIN_MENU_SCREEN) {
-                MainMenuScreen(modifier = modifier)
+                MainMenuScreen(
+                    modifier = modifier,
+                    onNavigateToWalletTransfer = {
+                        navController.navigate(Routes.WALLET_TRANSFER_SCREEN)
+                    },
+                )
             }
 
 
