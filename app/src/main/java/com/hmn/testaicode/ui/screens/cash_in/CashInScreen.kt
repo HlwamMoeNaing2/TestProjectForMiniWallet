@@ -64,7 +64,7 @@ import com.hmn.testaicode.ui.theme.appBackgroundBrush
 @Composable
 fun CashInScreen(
     modifier: Modifier = Modifier,
-    onAddMoney: (String, CashInMethod) -> Unit = { _, _ -> },
+//    onAddMoney: (String, CashInMethod) -> Unit = { _, _ -> },
 ) {
 
     val context = LocalContext.current
@@ -238,7 +238,7 @@ fun CashInScreen(
                     enabled = canSubmit,
                     onClick = {
                         Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                        onAddMoney(amount, selectedMethod)
+                        //onAddMoney(amount, selectedMethod)
                     }
                 )
 

@@ -62,9 +62,9 @@ import com.hmn.testaicode.ui.theme.appBackgroundBrush
 @Composable
 fun WalletTransferScreen(
     modifier: Modifier = Modifier,
-    availableBalanceDisplay: String = "$5,234.50",
-    transferFeeDisplay: String = "Free",
-    onSendMoney: (recipient: String, amount: String, note: String) -> Unit = { _, _, _ -> },
+    //availableBalanceDisplay: String = "$5,234.50",
+   // transferFeeDisplay: String = "Free",
+    //onSendMoney: (recipient: String, amount: String, note: String) -> Unit = { _, _, _ -> },
 ) {
     val scheme = MaterialTheme.colorScheme
     val context = LocalContext.current
@@ -256,7 +256,7 @@ fun WalletTransferScreen(
                                 color = scheme.onSurface.copy(alpha = 0.72f)
                             )
                             Text(
-                                text = availableBalanceDisplay,
+                                text = "43454",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = scheme.onSurface
@@ -273,7 +273,7 @@ fun WalletTransferScreen(
                                 color = scheme.onSurface.copy(alpha = 0.72f)
                             )
                             Text(
-                                text = transferFeeDisplay,
+                                text = "4544",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = scheme.primary
@@ -292,7 +292,7 @@ fun WalletTransferScreen(
                 enabled = canSend,
                 onClick = {
                     Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                    onSendMoney(recipient.trim(), amount, note.trim())
+                    //onSendMoney(recipient.trim(), amount, note.trim())
                 }
             )
 

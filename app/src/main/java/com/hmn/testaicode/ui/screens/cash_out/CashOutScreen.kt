@@ -59,8 +59,7 @@ import com.hmn.testaicode.ui.theme.appBackgroundBrush
 @Composable
 fun CashOutScreen(
     modifier: Modifier = Modifier,
-    availableBalanceDisplay: String = "$5,234.50",
-    onWithdraw: (String, CashOutMethod) -> Unit = { _, _ -> },
+   // onWithdraw: (String, CashOutMethod) -> Unit = { _, _ -> },
 ) {
     val scheme = MaterialTheme.colorScheme
     val context = LocalContext.current
@@ -132,7 +131,7 @@ fun CashOutScreen(
                             color = scheme.onSurface.copy(alpha = 0.75f)
                         )
                         Text(
-                            text = availableBalanceDisplay,
+                            text = "67898",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = scheme.onSurface
@@ -254,7 +253,7 @@ fun CashOutScreen(
                     enabled = canWithdraw,
                     onClick = {
                         Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                        onWithdraw(amount, selectedMethod)
+                        //onWithdraw(amount, selectedMethod)
                     }
                 )
 
