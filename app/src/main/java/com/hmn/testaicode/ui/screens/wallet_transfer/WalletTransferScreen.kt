@@ -56,6 +56,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hmn.testaicode.extension.isValidPhone
 import com.hmn.testaicode.navigation.Routes
+import com.hmn.testaicode.ui.screens.error.ErrorDialogScreen
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
 import com.hmn.testaicode.ui.screens.wallet_transfer.components.FieldLabel
 import com.hmn.testaicode.ui.screens.wallet_transfer.components.SendMoneyGradientButton
@@ -68,13 +69,15 @@ fun WalletTransferScreen(
     //availableBalanceDisplay: String = "$5,234.50",
    // transferFeeDisplay: String = "Free",
     //onSendMoney: (recipient: String, amount: String, note: String) -> Unit = { _, _, _ -> },
-    navController: NavController
+    navController: NavController,
+    showErrorDialogForPreview: Boolean = false,
 ) {
     val scheme = MaterialTheme.colorScheme
     val context = LocalContext.current
     var recipient by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
+    var showErrorDialog by remember { mutableStateOf(showErrorDialogForPreview) }
 
     val amountValue = amount.toDoubleOrNull() ?: 0.0
     val canSend = recipient.trim().isNotEmpty() && amountValue > 0.0
@@ -295,13 +298,23 @@ fun WalletTransferScreen(
             GradientContinueButton(
                 enabled = canSend,
                 onClick = {
-                    Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                    //onSendMoney(recipient.trim(), amount, note.trim())
-                    navController.navigate(Routes.RECEIPT_SCREEN)
+                    // TODO show dialog for UI preview
+                    showErrorDialog = true
                 }
             )
 
             Spacer(modifier = Modifier.height(10.dp))
+
+            ErrorDialogScreen(
+                visible = showErrorDialog,
+                title = "Transfer failed",
+                message = "We couldn’t find that user or the request failed. Please try again.",
+                onRetry = {
+                    showErrorDialog = false
+                    // TODO: call API again here
+                },
+                onCancel = { showErrorDialog = false },
+            )
 
 
         }
@@ -342,6 +355,9 @@ private fun filterMoneyInput(raw: String): String {
 @Composable
 private fun WalletTransferScreenPreview() {
     TestAICodeTheme {
-        WalletTransferScreen(navController = rememberNavController())
+        WalletTransferScreen(
+            navController = rememberNavController(),
+            showErrorDialogForPreview = true,
+        )
     }
 }
