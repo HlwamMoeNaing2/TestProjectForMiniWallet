@@ -32,6 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hmn.testaicode.CountryViewModel
 import com.hmn.testaicode.data.countryList
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.PhoneNumberField
@@ -46,19 +49,18 @@ import com.hmn.testaicode.extension.isValidPhone
 fun EnterPhoneNumberScreen(
     modifier: Modifier = Modifier,
     onContinue: (String) -> Unit = {},
-    /*countryViewModel: CountryViewModel = viewModel(),*/
+    countryViewModel: CountryViewModel = hiltViewModel(),
 ) {
 
-    /*
-    val countries by countryViewModel.countries.collectAsState()
-    val selectedCountry by countryViewModel.selectedCountry.collectAsState()
-    val showCountryPicker by countryViewModel.showPicker.collectAsState()
-     */
+
+    val countries by countryViewModel.countries.collectAsStateWithLifecycle()
+    val selectedCountry by countryViewModel.selectedCountry.collectAsStateWithLifecycle()
+    val showCountryPicker by countryViewModel.showPicker.collectAsStateWithLifecycle()
 
 
     var phoneNumber by remember { mutableStateOf("") }
 
-    var showCountryPicker by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     val scheme = MaterialTheme.colorScheme
 
@@ -121,8 +123,8 @@ fun EnterPhoneNumberScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         PhoneNumberField(
-                            country = countryList.first(),
-                            onCountryClick = { showCountryPicker = true /*countryViewModel.openPicker()*/ },
+                            country = selectedCountry,
+                            onCountryClick = { countryViewModel.openPicker() },
                             value = phoneNumber,
                             onValueChange = { phoneNumber = it },
                             placeholder = "555 000 1234"
@@ -146,15 +148,13 @@ fun EnterPhoneNumberScreen(
 
         if (showCountryPicker) {
             CountryPickerDialog(
-                countries = countryList,
-                selected = countryList.first(),
+                countries = countries,
+                selected = selectedCountry,
                 onDismiss = {
-                /*countryViewModel.closePicker() */
-                    showCountryPicker = false
+                    countryViewModel.closePicker()
                 },
                 onSelect = {
-                    showCountryPicker = false
-                /*countryViewModel.selectCountry(it)*/
+                    countryViewModel.selectCountry(it)
                 }
             )
         }
