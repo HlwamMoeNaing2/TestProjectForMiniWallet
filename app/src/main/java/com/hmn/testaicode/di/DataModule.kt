@@ -1,8 +1,13 @@
 package com.hmn.testaicode.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.hmn.testaicode.data.AppStorageProviderRepo
 import com.hmn.testaicode.data.AppStorageProviderRepoImpl
+import com.hmn.testaicode.data.AuthSessionRepository
+import com.hmn.testaicode.data.AuthSessionRepositoryImpl
+import com.hmn.testaicode.data.local.authSessionDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +22,21 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideAppStorageProvider(@ApplicationContext context: Context):AppStorageProviderRepo{
+    fun provideAuthSessionDataStore(
+        @ApplicationContext context: Context,
+    ): DataStore<Preferences> = context.authSessionDataStore
+
+    @Provides
+    @Singleton
+    fun provideAuthSessionRepository(
+        dataStore: DataStore<Preferences>,
+    ): AuthSessionRepository{
+        return  AuthSessionRepositoryImpl(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppStorageProvider(@ApplicationContext context: Context): AppStorageProviderRepo {
         return AppStorageProviderRepoImpl(context)
     }
 }

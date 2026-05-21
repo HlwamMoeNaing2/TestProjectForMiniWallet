@@ -2,7 +2,10 @@ package com.hmn.testaicode.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,7 +31,10 @@ import com.hmn.testaicode.ui.screens.wallet_transfer.WalletTransferScreen
 import kotlinx.coroutines.delay
 
 @Composable
-fun AppNavigation(modifier: Modifier) {
+fun AppNavigation(
+    modifier: Modifier,
+    authSessionViewModel: AuthSessionViewModel = hiltViewModel(),
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -44,7 +50,7 @@ fun AppNavigation(modifier: Modifier) {
                     } else {
                         Routes.REGISTRATION_GRAPH
                     }
-                    navController.navigate(Routes.MAIN_MENU_GRAPH) {
+                    navController.navigate(destination) {
                         popUpTo(Routes.STARTUP_SCREEN) { inclusive = true }
                     }
                 },
@@ -63,6 +69,7 @@ fun AppNavigation(modifier: Modifier) {
                         if (isNewUser) {
                             navController.navigate(Routes.ID_SELFIE_MATCHING_SCREEN)
                         } else {
+                            authSessionViewModel.markLoggedIn()
                             navController.navigate(Routes.MAIN_MENU_GRAPH) {
                                 popUpTo(Routes.REGISTRATION_GRAPH) { inclusive = true }
                             }
@@ -113,6 +120,7 @@ fun AppNavigation(modifier: Modifier) {
                 PersonalInfoSubmitScreen(
                     modifier = modifier,
                     onSubmit = { _, _, _, _, _, _ ->
+                        authSessionViewModel.markLoggedIn()
                         navController.navigate(Routes.MAIN_MENU_GRAPH) {
                             popUpTo(Routes.REGISTRATION_GRAPH) { inclusive = true }
                         }
@@ -128,6 +136,12 @@ fun AppNavigation(modifier: Modifier) {
             composable(Routes.MAIN_MENU_SCREEN) {
                 MainMenuScreen(
                     modifier = modifier,
+                    onLogout = {
+                        authSessionViewModel.markLoggedOut()
+                        navController.navigate(Routes.REGISTRATION_GRAPH) {
+                            popUpTo(Routes.MAIN_MENU_GRAPH) { inclusive = true }
+                        }
+                    },
                     onNavigateToWalletTransfer = {
                         navController.navigate(Routes.WALLET_TRANSFER_SCREEN) {
                             launchSingleTop = true
@@ -210,11 +224,13 @@ fun AppNavigation(modifier: Modifier) {
 private fun StartupRoute(
     modifier: Modifier = Modifier,
     onReady: (Boolean) -> Unit,
+    startupViewModel: StartupViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(Unit) {
-        val isAlreadyLoggedIn = false
-        delay(350)
-        onReady(isAlreadyLoggedIn)
+    val startupState by startupViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(startupState) {
+        val ready = startupState as? StartupUiState.Ready ?: return@LaunchedEffect
+        onReady(ready.isLoggedIn)
     }
 
     SplashScreen()

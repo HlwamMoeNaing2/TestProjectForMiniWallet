@@ -36,9 +36,10 @@ private object MainMenuTabRoutes {
 @Composable
 fun MainMenuScreen(
     modifier: Modifier = Modifier,
+    onLogout: () -> Unit = {},
     onNavigateToWalletTransfer: () -> Unit = {},
-    onNavigateToCashIn:() -> Unit = {},
-    onNavigateToCashOut:() -> Unit = {}
+    onNavigateToCashIn: () -> Unit = {},
+    onNavigateToCashOut: () -> Unit = {},
 ) {
     val tabNavController = rememberNavController()
     val currentBackStackEntry = tabNavController.currentBackStackEntryAsState()
@@ -89,7 +90,7 @@ fun MainMenuScreen(
                 InboxScreen()
             }
             composable(MainMenuTabRoutes.PROFILE) {
-                ProfileScreen()
+                ProfileScreen(onLogout = onLogout)
             }
         }
     }
