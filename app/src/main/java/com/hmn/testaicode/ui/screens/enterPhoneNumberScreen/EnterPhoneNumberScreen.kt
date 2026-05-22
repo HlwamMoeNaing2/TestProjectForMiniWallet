@@ -1,5 +1,6 @@
 package com.hmn.testaicode.ui.screens.enterPhoneNumberScreen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.hmn.testaicode.CountryViewModel
 import com.hmn.testaicode.data.countryList
 import com.hmn.testaicode.ui.screens.enterPhoneNumberScreen.components.GradientContinueButton
@@ -44,12 +47,16 @@ import com.hmn.testaicode.ui.components.dialog.CountryPickerDialog
 import com.hmn.testaicode.ui.theme.TestAICodeTheme
 import com.hmn.testaicode.ui.theme.appBackgroundBrush
 import com.hmn.testaicode.extension.isValidPhone
+import com.hmn.testaicode.navigation.AuthSessionViewModel
+import com.hmn.testaicode.navigation.Routes
 
 @Composable
 fun EnterPhoneNumberScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    onContinue: (String) -> Unit = {},
     countryViewModel: CountryViewModel = hiltViewModel(),
+    enterPhoneNumberViewModel: EnterPhoneNumberViewModel = hiltViewModel(),
+    authSessionViewModel: AuthSessionViewModel = hiltViewModel(),
 ) {
 
 
@@ -58,11 +65,41 @@ fun EnterPhoneNumberScreen(
     val showCountryPicker by countryViewModel.showPicker.collectAsStateWithLifecycle()
 
 
+    // User Detail API State
+    val userDetailState by enterPhoneNumberViewModel.userDetailState.collectAsStateWithLifecycle()
+
+
     var phoneNumber by remember { mutableStateOf("") }
 
 
     val context = LocalContext.current
     val scheme = MaterialTheme.colorScheme
+
+
+    when (userDetailState) {
+        is UserDetailState.Error -> {
+            Log.d("#MMLog", "EnterPhoneNumberScreen: Error ")
+            navController.navigate(Routes.ID_SELFIE_MATCHING_SCREEN)
+        }
+
+        UserDetailState.Loading -> {
+            Log.d("#MMLog", "EnterPhoneNumberScreen: Loading ")
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is UserDetailState.Success -> {
+            Log.d("#MMLog", "EnterPhoneNumberScreen: Success ")
+            Toast.makeText(context, "Fucking success", Toast.LENGTH_LONG).show()
+            authSessionViewModel.markLoggedIn()
+            navController.navigate(Routes.MAIN_MENU_GRAPH) {
+                popUpTo(Routes.REGISTRATION_GRAPH) { inclusive = true }
+            }
+
+        }
+    }
+
 
     Box(
         modifier = modifier
@@ -136,8 +173,7 @@ fun EnterPhoneNumberScreen(
                     GradientContinueButton(
                         enabled = phoneNumber.isValidPhone(),
                         onClick = {
-                            Toast.makeText(context, "Continue", Toast.LENGTH_SHORT).show()
-                            onContinue(phoneNumber)
+                            enterPhoneNumberViewModel.getUserDetail(phoneNumber)
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -159,12 +195,14 @@ fun EnterPhoneNumberScreen(
             )
         }
     }
+
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun EnterPhoneNumberScreenPreview() {
     TestAICodeTheme {
-        EnterPhoneNumberScreen()
+
     }
 }

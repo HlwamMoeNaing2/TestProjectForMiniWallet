@@ -8,7 +8,7 @@ fun String.isValidPhone(): Boolean {
 
         trimmed.length < 8 -> false
 
-        trimmed.length > 9 -> false
+        trimmed.length > 13 -> false
 
         !trimmed.all { it.isDigit() } -> false
 

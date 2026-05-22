@@ -6,3 +6,4 @@ interface UserRepository {
     suspend fun getUsers(): SimpleResponseHandler<List<User>>
     suspend fun getUser(id: Int): SimpleResponseHandler<User>
 }
+

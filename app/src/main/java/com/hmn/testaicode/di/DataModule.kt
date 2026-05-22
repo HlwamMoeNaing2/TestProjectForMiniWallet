@@ -9,7 +9,10 @@ import com.hmn.testaicode.data.AuthSessionRepository
 import com.hmn.testaicode.data.AuthSessionRepositoryImpl
 import com.hmn.testaicode.data.UserRepository
 import com.hmn.testaicode.data.UserRepositoryImpl
+import com.hmn.testaicode.data.WalletUserRepo
+import com.hmn.testaicode.data.WalletUserRepoImpl
 import com.hmn.testaicode.data.local.authSessionDataStore
+import com.hmn.testaicode.di.DataModule.provideWalletUserRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,4 +48,8 @@ object DataModule {
     @Provides
     @Singleton
     fun provideUserRepository(impl: UserRepositoryImpl): UserRepository = impl
+
+    @Provides
+    @Singleton
+    fun provideWalletUserRepo(impl: WalletUserRepoImpl): WalletUserRepo = impl
 }

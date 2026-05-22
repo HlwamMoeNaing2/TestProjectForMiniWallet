@@ -43,7 +43,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(
+    @JsonPlaceholderRetrofit
+    fun provideJsonPlaceholderRetrofit(
         moshi: Moshi,
         okHttpClient: OkHttpClient,
     ): Retrofit = Retrofit.Builder()
@@ -54,6 +55,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideJsonPlaceholderApi(retrofit: Retrofit): JsonPlaceholderApi =
-        retrofit.create(JsonPlaceholderApi::class.java)
+    fun provideJsonPlaceholderApi(
+        @JsonPlaceholderRetrofit retrofit: Retrofit,
+    ): JsonPlaceholderApi = retrofit.create(JsonPlaceholderApi::class.java)
 }

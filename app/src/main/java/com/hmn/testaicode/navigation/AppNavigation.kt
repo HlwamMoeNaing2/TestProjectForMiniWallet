@@ -63,18 +63,9 @@ fun AppNavigation(
         ) {
             composable(Routes.ENTER_PHONE_SCREEN) {
                 EnterPhoneNumberScreen(
+                    navController = navController,
                     modifier = modifier,
-                    onContinue = { phoneNumber ->
-                        val isNewUser = simulateIsNewUser(phoneNumber)
-                        if (isNewUser) {
-                            navController.navigate(Routes.ID_SELFIE_MATCHING_SCREEN)
-                        } else {
-                            authSessionViewModel.markLoggedIn()
-                            navController.navigate(Routes.MAIN_MENU_GRAPH) {
-                                popUpTo(Routes.REGISTRATION_GRAPH) { inclusive = true }
-                            }
-                        }
-                    },
+
                 )
             }
             composable(Routes.ID_SELFIE_MATCHING_SCREEN) {
