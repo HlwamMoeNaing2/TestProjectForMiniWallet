@@ -7,6 +7,8 @@ import com.hmn.testaicode.data.AppStorageProviderRepo
 import com.hmn.testaicode.data.AppStorageProviderRepoImpl
 import com.hmn.testaicode.data.AuthSessionRepository
 import com.hmn.testaicode.data.AuthSessionRepositoryImpl
+import com.hmn.testaicode.data.UserRepository
+import com.hmn.testaicode.data.UserRepositoryImpl
 import com.hmn.testaicode.data.local.authSessionDataStore
 import dagger.Module
 import dagger.Provides
@@ -39,4 +41,8 @@ object DataModule {
     fun provideAppStorageProvider(@ApplicationContext context: Context): AppStorageProviderRepo {
         return AppStorageProviderRepoImpl(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(impl: UserRepositoryImpl): UserRepository = impl
 }

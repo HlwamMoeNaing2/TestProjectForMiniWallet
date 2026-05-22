@@ -7,28 +7,29 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowOutward
 import androidx.compose.material.icons.outlined.SyncAlt
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hmn.testaicode.ui.screens.home_screen.components.ActivityRow
 import com.hmn.testaicode.ui.screens.home_screen.components.BalanceCard
 import com.hmn.testaicode.ui.screens.home_screen.components.QuickActionTile
@@ -41,7 +42,6 @@ import com.hmn.testaicode.ui.theme.appBackgroundBrush
 fun HomeScreen(
     modifier: Modifier = Modifier,
     initials: String = "AC",
-    name: String = "Alex Carter",
     phone: String = "+1 (415) 555 0102",
     balanceDisplay: String = "$5,037.50",
     maskedCard: String = "•••• 4421",
@@ -52,91 +52,113 @@ fun HomeScreen(
     onCashOut: () -> Unit = {},
     onNotifications: () -> Unit = {},
     onToggleBalanceVisibility: () -> Unit = {},
+    viewModel:MainMenuViewModel = hiltViewModel()
 ) {
+    val userState by viewModel.userStat.collectAsStateWithLifecycle()
     val scheme = MaterialTheme.colorScheme
 //   .windowInsetsPadding(WindowInsets.systemBars)
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(appBackgroundBrush())
 
-            .padding(horizontal = 18.dp)
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                TopGreetingRow(
-                    initials = initials,
-                    name = name,
-                    onNotifications = onNotifications
-                )
+
+    when(userState){
+        is UserDataState.Error -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text((userState as UserDataState.Error).message)
             }
-
-            item {
-                BalanceCard(
-                    balanceDisplay = balanceDisplay,
-                    maskedCard = maskedCard,
-                    phone = phone,
-                    onEyeClick = onToggleBalanceVisibility
-                )
+        }
+        UserDataState.Loading -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
+        }
+        is UserDataState.Success -> {
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(appBackgroundBrush())
 
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
+                    .padding(horizontal = 18.dp)
+            ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    QuickActionTile(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Outlined.SyncAlt,
-                        label = "Transfer",
-                        onClick = onTransfer,
-                    )
-                    QuickActionTile(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Outlined.Add,
-                        label = "Cash In",
-                        onClick = onCashIn
-                    )
-                    QuickActionTile(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Outlined.ArrowOutward,
-                        label = "Cash Out",
-                        onClick = onCashOut
-                    )
-                }
-            }
+                    item {
+                        TopGreetingRow(
+                            initials = initials,
+                            name =(userState as UserDataState.Success).user.name ,
+                            onNotifications = onNotifications
+                        )
+                    }
 
-            item {
-                RecentHeader(
-                    countLabel = recentCountLabel
-                )
-            }
+                    item {
+                        BalanceCard(
+                            balanceDisplay = balanceDisplay,
+                            maskedCard = maskedCard,
+                            phone = phone,
+                            onEyeClick = onToggleBalanceVisibility
+                        )
+                    }
 
-            item {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(18.dp),
-                    color = scheme.surface,
-                    tonalElevation = 0.dp,
-                    shadowElevation = 0.dp,
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        recent.forEachIndexed { idx, it ->
-                            ActivityRow(item = it)
-                            if (idx != recent.lastIndex) {
-                                HorizontalDivider(color = scheme.outline.copy(alpha = 0.25f))
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                        ) {
+                            QuickActionTile(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Outlined.SyncAlt,
+                                label = "Transfer",
+                                onClick = onTransfer,
+                            )
+                            QuickActionTile(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Outlined.Add,
+                                label = "Cash In",
+                                onClick = onCashIn
+                            )
+                            QuickActionTile(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Outlined.ArrowOutward,
+                                label = "Cash Out",
+                                onClick = onCashOut
+                            )
+                        }
+                    }
+
+                    item {
+                        RecentHeader(
+                            countLabel = recentCountLabel
+                        )
+                    }
+
+                    item {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(18.dp),
+                            color = scheme.surface,
+                            tonalElevation = 0.dp,
+                            shadowElevation = 0.dp,
+                        ) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                recent.forEachIndexed { idx, it ->
+                                    ActivityRow(item = it)
+                                    if (idx != recent.lastIndex) {
+                                        HorizontalDivider(color = scheme.outline.copy(alpha = 0.25f))
+                                    }
+                                }
                             }
                         }
                     }
+
+                    item { Spacer(modifier = Modifier.height(10.dp)) }
                 }
             }
-
-            item { Spacer(modifier = Modifier.height(10.dp)) }
         }
     }
+
+
+
+
 }
 
 data class HomeActivityItem(

@@ -11,8 +11,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -40,7 +43,11 @@ fun MainMenuScreen(
     onNavigateToWalletTransfer: () -> Unit = {},
     onNavigateToCashIn: () -> Unit = {},
     onNavigateToCashOut: () -> Unit = {},
+
+
 ) {
+
+
     val tabNavController = rememberNavController()
     val currentBackStackEntry = tabNavController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry.value?.destination?.route
@@ -58,6 +65,7 @@ fun MainMenuScreen(
                     NavigationBarItem(
                         selected = currentRoute == tab.route,
                         onClick = {
+
                             if (currentRoute == tab.route) return@NavigationBarItem
                             tabNavController.navigate(tab.route) {
                                 popUpTo(tabNavController.graph.startDestinationId) {
