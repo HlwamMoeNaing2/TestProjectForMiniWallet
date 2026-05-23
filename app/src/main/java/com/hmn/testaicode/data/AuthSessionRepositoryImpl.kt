@@ -21,4 +21,15 @@ class AuthSessionRepositoryImpl @Inject constructor(
             preferences[AuthSessionPreferencesKeys.IS_LOGGED_IN] = loggedIn
         }
     }
+
+    override val userPhone :Flow<String> = dataStore.data.map { preferences ->
+        preferences[AuthSessionPreferencesKeys.PHONE_NO] ?: ""
+
+    }
+
+    override suspend fun saveUserPhoner(ph: String) {
+        dataStore.edit { preferences ->
+            preferences[AuthSessionPreferencesKeys.PHONE_NO] = ""
+        }
+    }
 }

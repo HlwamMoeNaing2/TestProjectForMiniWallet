@@ -110,12 +110,7 @@ fun AppNavigation(
             composable(Routes.PERSONAL_INFO_SCREEN) {
                 PersonalInfoSubmitScreen(
                     modifier = modifier,
-                    onSubmit = { _, _, _, _, _, _ ->
-                        authSessionViewModel.markLoggedIn()
-                        navController.navigate(Routes.MAIN_MENU_GRAPH) {
-                            popUpTo(Routes.REGISTRATION_GRAPH) { inclusive = true }
-                        }
-                    },
+                  navController = navController
                 )
             }
         }
